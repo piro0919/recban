@@ -13,7 +13,8 @@
       "excludedFiles": [
         "_app.tsx",
         "*.d.ts",
-        "next.config.js"
+        "next.config.js",
+        "next-sitemap.js"
       ],
       "files": "*",
       "rules": {
