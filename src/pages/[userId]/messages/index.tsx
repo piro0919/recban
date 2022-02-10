@@ -88,7 +88,8 @@ export const getServerSideProps: GetServerSideProps<
 
   if (
     !process.env.ALGOLIA_APPLICATION_ID ||
-    !process.env.ALGOLIA_ADMIN_API_KEY
+    !process.env.ALGOLIA_ADMIN_API_KEY ||
+    !process.env.ALGOLIA_MESSAGES_INDEX_NAME
   ) {
     return {
       redirect: {
@@ -102,7 +103,7 @@ export const getServerSideProps: GetServerSideProps<
     process.env.ALGOLIA_APPLICATION_ID,
     process.env.ALGOLIA_ADMIN_API_KEY
   );
-  const index = client2.initIndex("dev_MESSAGES");
+  const index = client2.initIndex(process.env.ALGOLIA_MESSAGES_INDEX_NAME);
   const db = getFirestore();
   const collectionRef = collection(db, "users");
   const { messages } = await index

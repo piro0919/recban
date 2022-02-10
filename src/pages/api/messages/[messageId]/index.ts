@@ -44,7 +44,9 @@ handler.get<ExtendedGetRequest, ExtendedGetResponse>(
       process.env.ALGOLIA_APPLICATION_ID || "",
       process.env.ALGOLIA_ADMIN_API_KEY || ""
     );
-    const index = client.initIndex("dev_MESSAGES");
+    const index = client.initIndex(
+      process.env.ALGOLIA_MESSAGES_INDEX_NAME || ""
+    );
     const messageWithObjectID = await index.getObject<Algolia.Message>(
       messageId,
       {
@@ -76,7 +78,9 @@ handler.patch<ExtendedPatchRequest, ExtendedPatchResponse>(
       process.env.ALGOLIA_APPLICATION_ID || "",
       process.env.ALGOLIA_ADMIN_API_KEY || ""
     );
-    const index = client.initIndex("dev_MESSAGES");
+    const index = client.initIndex(
+      process.env.ALGOLIA_MESSAGES_INDEX_NAME || ""
+    );
     const partialUpdateObjectResponse = await index
       .partialUpdateObject({ messages, objectID: messageId })
       .wait();
