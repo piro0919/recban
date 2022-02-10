@@ -7,7 +7,7 @@
     "@next-boost/redis-cache": "0.3.0",
     "@react-hook/window-size": "3.0.7",
     "@sendgrid/mail": "7.6.0",
-    "@szhsin/react-menu": "2.3.3",
+    "@szhsin/react-menu": "2.3.4",
     "algoliasearch": "4.12.0",
     "axios": "0.24.0",
     "contentful": "9.1.6",
