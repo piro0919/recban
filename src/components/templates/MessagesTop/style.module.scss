@@ -1,10 +1,24 @@
 .anchor {
+  color: #808080;
   display: grid;
   gap: 12px;
   grid-template: auto / auto 1fr auto;
   padding: 12px;
 }
 
+.new {
+  color: #bdc1c6;
+}
+
 .item:not(:first-child) .anchor {
   border-top: 1px solid #3c4043;
+}
+
+.content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.date {
+  font-size: 1.2rem;
 }

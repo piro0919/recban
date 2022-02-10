@@ -17,7 +17,7 @@ function MyArticlesTop({
 }: MyArticlesTopProps): JSX.Element {
   return (
     <div className={styles.wrapper}>
-      <div className={styles.counteWrapper}>{`募集中の記事：${total}`}</div>
+      <div className={styles.counterWrapper}>{`募集中の記事：${total}`}</div>
       <ArticleList articles={articles} userId={userId} />
     </div>
   );

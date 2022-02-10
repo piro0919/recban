@@ -62,6 +62,7 @@ export const getServerSideProps: GetServerSideProps<
 
   if (
     !process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN ||
+    !process.env.CONTENTFUL_ENVIRONMENT ||
     !process.env.CONTENTFUL_SPACE_ID
   ) {
     return {
@@ -74,6 +75,7 @@ export const getServerSideProps: GetServerSideProps<
 
   const client = createClient({
     accessToken: process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN,
+    environment: process.env.CONTENTFUL_ENVIRONMENT,
     space: process.env.CONTENTFUL_SPACE_ID,
   });
   const { articles } = await client
@@ -118,17 +120,31 @@ export const getServerSideProps: GetServerSideProps<
     .then(async ({ hits }) => ({
       messages: await Promise.all(
         hits.map(async ({ applicantUserId, messages, objectID }) => {
-          const { content, date } = messages.length
-            ? messages[0]
-            : { content: "aaa", date: "bbb" };
+          const { content, date, user } = messages[messages.length - 1];
           const docRef = doc(collectionRef, applicantUserId);
           const snapshot = await getDoc(docRef);
-          const data = snapshot.exists() ? snapshot.data() : undefined;
-          const { name } = (data || {}) as Partial<Firestore.User>;
+          const formattedDate = dayjs(date).format("YYYY.MM.DD HH:mm");
+          const isNew =
+            (applicantUserId !== userId && user === "applicant") ||
+            (applicantUserId === userId && user === "recruiter");
+
+          if (!snapshot.exists()) {
+            return {
+              content,
+              isNew,
+              date: formattedDate,
+              id: objectID,
+              name: "",
+            };
+          }
+
+          const data = snapshot.data();
+          const { name } = data as Firestore.User;
 
           return {
             content,
-            date: dayjs(date).format("YYYY.MM.DD HH:mm"),
+            isNew,
+            date: formattedDate,
             id: objectID,
             name: `${name || ""}さん`,
           };
@@ -138,8 +154,10 @@ export const getServerSideProps: GetServerSideProps<
 
   return {
     props: {
-      messages,
       userId,
+      messages: messages.sort(({ date: dateA }, { date: dateB }) =>
+        dayjs(dateA).isBefore(dateB) ? 1 : -1
+      ),
     },
   };
 };

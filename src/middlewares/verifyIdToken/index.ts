@@ -21,6 +21,8 @@ const verifyIdToken = nc<NextApiRequest, NextApiResponse>().use(
 
         return;
       }
+
+      console.log(userId, uid);
     } catch {}
 
     try {

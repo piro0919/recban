@@ -7,7 +7,7 @@
   }
 }
 
-.counteWrapper {
+.counterWrapper {
   font-family: "Zen Kaku Gothic Antique", sans-serif;
   @include mq($until: tablet) {
     border-bottom: 1px solid #3c4043;

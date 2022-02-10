@@ -15,6 +15,7 @@ import MessageDetail, {
 import Seo from "components/templates/Seo";
 import axiosInstance from "libs/axiosInstance";
 import fetcher from "libs/fetcher";
+import base from "middlewares/base";
 import { PostEmailData, PostEmailBody } from "pages/api/email";
 import {
   PatchMessagesMessageIdData,
@@ -111,7 +112,7 @@ function MessageId({
         collocutorUserId,
         userId,
         subject: `${name}からメッセージが届きました`,
-        text: content,
+        text: `${content}\n\n${window.location.origin}/${collocutorUserId}/messages/${messageId}`,
       });
     },
     [
@@ -153,11 +154,33 @@ type ParsedUrlQuery = {
 export const getServerSideProps: GetServerSideProps<
   MessageIdProps,
   ParsedUrlQuery
-> = async (ctx) => {
-  const { params } = ctx;
+> = async ({ params, req, res }) => {
+  if (!params) {
+    return {
+      redirect: {
+        destination: "/signout",
+        permanent: false,
+      },
+    };
+  }
+
+  const { messageId, userId } = params;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (req as Record<string, any>).userId = userId;
+
+  try {
+    await base().run(req, res);
+  } catch (e) {
+    return {
+      redirect: {
+        destination: "/signout",
+        permanent: false,
+      },
+    };
+  }
 
   if (
-    !params ||
     !process.env.ALGOLIA_ADMIN_API_KEY ||
     !process.env.ALGOLIA_APPLICATION_ID ||
     !process.env.ALGOLIA_MESSAGES_INDEX_NAME
@@ -170,7 +193,6 @@ export const getServerSideProps: GetServerSideProps<
     };
   }
 
-  const { messageId, userId } = params;
   const client = algoliasearch(
     process.env.ALGOLIA_APPLICATION_ID,
     process.env.ALGOLIA_ADMIN_API_KEY
@@ -186,10 +208,24 @@ export const getServerSideProps: GetServerSideProps<
   let collocutorUserId = "";
 
   if (isApplicant) {
+    if (
+      !process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN ||
+      !process.env.CONTENTFUL_ENVIRONMENT ||
+      !process.env.CONTENTFUL_SPACE_ID
+    ) {
+      return {
+        redirect: {
+          destination: "/signout",
+          permanent: false,
+        },
+      };
+    }
+
     // 自分が応募者の場合
     const client = createClient({
-      accessToken: process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN || "",
-      space: process.env.CONTENTFUL_SPACE_ID || "",
+      accessToken: process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN,
+      environment: process.env.CONTENTFUL_ENVIRONMENT,
+      space: process.env.CONTENTFUL_SPACE_ID,
     });
 
     await client

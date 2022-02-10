@@ -4,6 +4,7 @@ import { createClient } from "contentful";
 import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { ReactElement, useCallback, useEffect } from "react";
 import { useSnackbar } from "react-simple-snackbar";
 import Layout from "components/templates/Layout";
@@ -14,6 +15,7 @@ import base from "middlewares/base";
 import { PostEmailData, PostEmailBody } from "pages/api/email";
 
 export type NewProps = Pick<MyEmailNewProps, "articleId" | "collocutorName"> & {
+  articleId: string;
   collocutorUserId: string;
   enabledEmail: boolean;
   name: string;
@@ -29,6 +31,7 @@ function New({
   userId,
 }: NewProps): JSX.Element {
   const [openSnackbar] = useSnackbar();
+  const router = useRouter();
   const handleSubmit = useCallback<MyEmailNewProps["onSubmit"]>(
     async ({ subject, text }) => {
       if (!enabledEmail) {
@@ -58,14 +61,24 @@ function New({
         PostEmailBody
       >("/api/email", {
         collocutorUserId,
-        text,
         userId,
         subject: `（${name}）${subject}`,
+        text: `${text}\n\n${window.location.origin}/${collocutorUserId}/articles/${articleId}`,
       });
 
       openSnackbar("メールを送信しました！");
+
+      await router.push(`/articles/${articleId}`);
     },
-    [collocutorUserId, enabledEmail, name, openSnackbar, userId]
+    [
+      articleId,
+      collocutorUserId,
+      enabledEmail,
+      name,
+      openSnackbar,
+      router,
+      userId,
+    ]
   );
 
   useEffect(() => {
@@ -142,9 +155,23 @@ export const getServerSideProps: GetServerSideProps<
     };
   }
 
+  if (
+    !process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN ||
+    !process.env.CONTENTFUL_ENVIRONMENT ||
+    !process.env.CONTENTFUL_SPACE_ID
+  ) {
+    return {
+      redirect: {
+        destination: "/signout",
+        permanent: false,
+      },
+    };
+  }
+
   const client = createClient({
-    accessToken: process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN || "",
-    space: process.env.CONTENTFUL_SPACE_ID || "",
+    accessToken: process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN,
+    environment: process.env.CONTENTFUL_ENVIRONMENT,
+    space: process.env.CONTENTFUL_SPACE_ID,
   });
   const { userId: collocutorUserId } = await client
     .getEntry<Contentful.IArticlesFields>(articleId)

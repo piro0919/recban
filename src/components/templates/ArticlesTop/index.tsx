@@ -1,3 +1,5 @@
+import useSwitch from "@react-hook/switch";
+import { FcEmptyFilter, FcFilledFilter } from "react-icons/fc";
 import styles from "./style.module.scss";
 import ArticleList, {
   ArticleListProps,
@@ -15,12 +17,27 @@ function ArticlesTop({
   onSubmit,
   total,
 }: ArticlesTopProps): JSX.Element {
+  const [isOpen, { off: offIsOpen, on: onIsOpen }] = useSwitch(false);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.detailWrapper}>
-        <div className={styles.counteWrapper}>{`募集中の記事：${total}`}</div>
-        <div className={styles.formWrapper}>
+        <div className={isOpen ? styles.open : styles.close}>
           <SearchForm defaultValues={defaultValues} onSubmit={onSubmit} />
+        </div>
+        <div className={styles.detailWrapper2}>
+          <div
+            className={styles.counterWrapper}
+          >{`募集中の記事：${total}`}</div>
+          {isOpen ? (
+            <button onClick={offIsOpen}>
+              <FcFilledFilter size={24} />
+            </button>
+          ) : (
+            <button onClick={onIsOpen}>
+              <FcEmptyFilter size={24} />
+            </button>
+          )}
         </div>
       </div>
       <ArticleList articles={articles} />

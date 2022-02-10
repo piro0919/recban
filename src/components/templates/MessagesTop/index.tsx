@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { useMemo } from "react";
 import styles from "./style.module.scss";
 
 type Message = {
   content: string;
   date: string;
   id: string;
+  isNew: boolean;
   name: string;
 };
 
@@ -14,21 +16,23 @@ export type MessagesTopProps = {
 };
 
 function MessagesTop({ messages, userId }: MessagesTopProps): JSX.Element {
-  return (
-    <ul>
-      {messages.map(({ content, date, id, name }) => (
+  const items = useMemo(
+    () =>
+      messages.map(({ content, date, id, isNew, name }) => (
         <li className={styles.item} key={id}>
           <Link href={`/${userId}/messages/${id}`}>
-            <a className={styles.anchor}>
+            <a className={`${styles.anchor} ${isNew ? styles.new : ""}`}>
               <div>{name}</div>
-              <div>{content}</div>
-              <div>{date}</div>
+              <div className={styles.content}>{content}</div>
+              <div className={styles.date}>{date}</div>
             </a>
           </Link>
         </li>
-      ))}
-    </ul>
+      )),
+    [messages, userId]
   );
+
+  return <ul>{items}</ul>;
 }
 
 export default MessagesTop;

@@ -38,7 +38,7 @@ function New({ userId }: NewProps): JSX.Element {
 
       openSnackbar("アカウントを作成しました！");
 
-      router.push(`/${userId}`);
+      router.push("/");
     },
     [openSnackbar, router, userId]
   );

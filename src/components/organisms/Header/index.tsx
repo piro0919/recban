@@ -31,19 +31,19 @@ function Header({ hideRecruit = false }: HeaderProps): JSX.Element {
           <h1 className={styles.heading1}>りくばん！</h1>
         </a>
       </Link>
-      <div>
-        {photoURL ? (
-          <UserMenu imageUrl={photoURL} name={displayName} userId={uid} />
-        ) : hideRecruit ? null : (
-          <p className={styles.recruit}>
-            メンバーを募集したい方は
+      {photoURL ? (
+        <UserMenu imageUrl={photoURL} name={displayName} userId={uid} />
+      ) : hideRecruit ? null : (
+        <p className={styles.recruit}>
+          <span>メンバーを募集したい方は</span>
+          <span>
             <Link href="/signin">
               <a className={styles.anchor}>サインイン</a>
             </Link>
             してください
-          </p>
-        )}
-      </div>
+          </span>
+        </p>
+      )}
     </header>
   );
 }

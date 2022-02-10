@@ -32,8 +32,8 @@ function useUser(): UserData {
         return;
       }
 
-      destroyCookie(null, "idToken");
-      destroyCookie(null, "refreshToken");
+      destroyCookie(null, "idToken", { path: "/" });
+      destroyCookie(null, "refreshToken", { path: "/" });
 
       setUser(undefined);
     });

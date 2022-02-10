@@ -36,11 +36,11 @@ function Redirect(): JSX.Element {
       .get<GetUsersUserIdData, AxiosResponse<GetUsersUserIdData>>(
         `/api/users/${uid}`
       )
-      .then(() => {
-        router.replace("/");
+      .then(async () => {
+        await router.replace("/");
       })
-      .catch(() => {
-        router.replace(`/${uid}/new`);
+      .catch(async () => {
+        await router.replace(`/${uid}/new`);
       });
   }, [result, router, user]);
 

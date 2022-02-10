@@ -119,9 +119,23 @@ export const getServerSideProps: GetServerSideProps<
     };
   }
 
+  if (
+    !process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN ||
+    !process.env.CONTENTFUL_ENVIRONMENT ||
+    !process.env.CONTENTFUL_SPACE_ID
+  ) {
+    return {
+      redirect: {
+        destination: "/signout",
+        permanent: false,
+      },
+    };
+  }
+
   const client = createClient({
-    accessToken: process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN || "",
-    space: process.env.CONTENTFUL_SPACE_ID || "",
+    accessToken: process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN,
+    environment: process.env.CONTENTFUL_ENVIRONMENT,
+    space: process.env.CONTENTFUL_SPACE_ID,
   });
   const defaultValues = await client
     .getEntry<Contentful.IArticlesFields>(articleId)

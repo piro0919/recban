@@ -1,8 +1,17 @@
+@import "styles/breakpoints";
+@import "sass-mq";
+
 .formInner {
-  align-items: center;
   display: flex;
-  gap: 16px;
-  justify-content: space-between;
+  @include mq($until: tablet) {
+    flex-direction: column;
+    gap: 12px;
+  }
+  @include mq($from: tablet) {
+    align-items: center;
+    gap: 24px;
+    justify-content: space-between;
+  }
 }
 
 .fieldsWrapper {

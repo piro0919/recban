@@ -160,12 +160,14 @@ function ArticleDetail({
               </Button>
             </div>
           ) : (
-            <p>
-              <Link href="/signin">
-                <a className={styles.anchor}>サインイン</a>
-              </Link>
-              すると連絡可能になります
-            </p>
+            <div className={styles.inner2}>
+              <p>
+                <Link href="/signin">
+                  <a className={styles.anchor}>サインイン</a>
+                </Link>
+                すると連絡可能になります
+              </p>
+            </div>
           )}
         </div>
       </Article>

@@ -17,15 +17,26 @@
   }
 }
 
-.counteWrapper {
+.open {
+  @include mq($until: tablet) {
+    padding: 0 0 12px;
+  }
+  @include mq($from: tablet) {
+    padding: 0 0 24px;
+  }
+}
+
+.close {
+  height: 0;
+  overflow: hidden;
+}
+
+.counterWrapper {
   font-family: "Zen Kaku Gothic Antique", sans-serif;
 }
 
-.formWrapper {
-  @include mq($until: tablet) {
-    padding: 4px 0 0;
-  }
-  @include mq($from: tablet) {
-    padding: 8px 0 0;
-  }
+.detailWrapper2 {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
 }

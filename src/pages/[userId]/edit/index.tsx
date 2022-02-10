@@ -4,6 +4,7 @@ import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { ReactElement, useCallback } from "react";
+import { useSnackbar } from "react-simple-snackbar";
 import Layout from "components/templates/Layout";
 import ProfileEdit, {
   ProfileEditProps,
@@ -22,6 +23,7 @@ export type EditProps = Pick<ProfileEditProps, "defaultValues"> & {
 
 function Edit({ defaultValues, userId }: EditProps): JSX.Element {
   const router = useRouter();
+  const [openSnackbar] = useSnackbar();
   const handleSubmit = useCallback<ProfileEditProps["onSubmit"]>(
     async ({ email, enabledContactEmail, name, notification, twitterId }) => {
       await axiosInstance.put<
@@ -36,9 +38,11 @@ function Edit({ defaultValues, userId }: EditProps): JSX.Element {
         twitterId,
       });
 
+      openSnackbar("ユーザー情報を修正しました！");
+
       router.push(`/${userId}`);
     },
-    [router, userId]
+    [openSnackbar, router, userId]
   );
 
   return (

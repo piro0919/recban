@@ -20,19 +20,36 @@ function AboutTop(): JSX.Element {
     return uid;
   }, [user]);
   const router = useRouter();
+  const [openSnackbar] = useSnackbar();
   const handleClick = useCallback<MouseEventHandler<HTMLAnchorElement>>(
     (e) => {
       e.preventDefault();
 
       if (!uid) {
+        openSnackbar(
+          <p>
+            <Link href="signin">
+              <a
+                style={{
+                  color: "#8ab4f8",
+                  margin: "0 4px",
+                  textDecoration: "underline",
+                }}
+              >
+                サインイン
+              </a>
+            </Link>
+            すると連絡可能になります
+          </p>
+        );
+
         return;
       }
 
       router.push(`/${uid}/report`);
     },
-    [router, uid]
+    [openSnackbar, router, uid]
   );
-  const [openSnackbar] = useSnackbar();
   const handleCopy = useCallback<NonNullable<Props["onCopy"]>>(() => {
     openSnackbar("メールアドレスをコピーしました");
   }, [openSnackbar]);
@@ -77,7 +94,7 @@ function AboutTop(): JSX.Element {
                 募集開始から 3
                 ヶ月経過した記事、および記事に紐づくメッセージは自動的に削除されます
               </li>
-              <li>同時に応募または募集可能な記事は 3 件までとなっております</li>
+              <li>同時に募集可能な記事は 3 件までとなっております</li>
               <li>
                 アカウント登録時にご入力いただいたユーザー情報は公開情報となります、あらかじめご了承ください
               </li>
