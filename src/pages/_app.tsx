@@ -7,6 +7,7 @@ import "ress";
 import dayjs from "dayjs";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import NProgress from "nprogress";
 import { ReactElement, ReactNode, useEffect } from "react";
@@ -27,6 +28,15 @@ type NextPageWithLayout = NextPage & {
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
+
+const PWAPrompt = dynamic<ReactIosPwaPrompt.PWAPromptProps>(
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  () => import("react-ios-pwa-prompt"),
+  {
+    ssr: false,
+  }
+);
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
   const { user } = useUser();
@@ -57,6 +67,14 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
     <SnackbarProvider>
       <UserContext.Provider value={{ user }}>
         {getLayout(<Component {...pageProps} />)}
+        <PWAPrompt
+          copyAddHomeButtonLabel="2) 「ホーム画面に追加」をタップします。"
+          copyBody="このウェブサイトにはアプリ機能があります。ホーム画面に追加してフルスクリーンおよびオフラインで使用できます。"
+          copyClosePrompt="キャンセル"
+          copyShareButtonLabel="1) （四角から矢印が飛び出したマーク）をタップします。"
+          copyTitle="ホーム画面に追加"
+          debug={process.env.NODE_ENV === "development"}
+        />
       </UserContext.Provider>
     </SnackbarProvider>
   );
