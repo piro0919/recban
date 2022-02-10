@@ -41,8 +41,6 @@ function ArticleDetail({
   frequency,
   fromDate,
   genre,
-  onSendMessage,
-  onTransitionEmail,
   part,
   place,
   sex,
@@ -147,7 +145,7 @@ function ArticleDetail({
             <div className={`${styles.buttonsWrapper} ${styles.inner2}`}>
               <Button
                 disabled={props.disabledEmail}
-                onClick={onTransitionEmail}
+                onClick={props.onTransitionEmail}
               >
                 メールを送信する
               </Button>
@@ -157,7 +155,9 @@ function ArticleDetail({
               >
                 Twitterから連絡する
               </Button>
-              <Button onClick={onSendMessage}>メッセージを送信する</Button>
+              <Button onClick={props.onSendMessage}>
+                メッセージを送信する
+              </Button>
             </div>
           ) : (
             <p>
