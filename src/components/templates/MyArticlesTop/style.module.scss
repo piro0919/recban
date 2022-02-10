@@ -1,0 +1,19 @@
+@import "styles/breakpoints";
+@import "sass-mq";
+
+.wrapper {
+  @include mq($from: tablet) {
+    padding: 24px 0;
+  }
+}
+
+.counteWrapper {
+  font-family: "Zen Kaku Gothic Antique", sans-serif;
+  @include mq($until: tablet) {
+    border-bottom: 1px solid #3c4043;
+    padding: 12px;
+  }
+  @include mq($from: tablet) {
+    padding: 0 0 24px;
+  }
+}

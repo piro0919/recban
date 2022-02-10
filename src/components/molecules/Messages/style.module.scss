@@ -1,0 +1,48 @@
+.wrapper {
+  display: grid;
+  gap: 12px;
+}
+
+.dateWrapper {
+  align-items: center;
+  display: grid;
+  font-size: 1.2rem;
+  gap: 12px;
+  grid-template: auto / 1fr auto 1fr;
+  margin: 12px 0;
+}
+
+.dateWrapper::before,
+.dateWrapper::after {
+  background: #3c4043;
+  content: "";
+  display: block;
+  height: 1px;
+}
+
+.senderWrapper,
+.receiverWrapper {
+  align-items: flex-end;
+  display: flex;
+  gap: 8px;
+  max-width: 90%;
+}
+
+.senderWrapper {
+  justify-self: flex-end;
+  max-width: 90%;
+}
+
+.receiverWrapper {
+  flex-direction: row-reverse;
+  justify-self: flex-start;
+}
+
+.dateWrapper2 {
+  font-size: 1.2rem;
+}
+
+.message {
+  background: #2d2e30;
+  padding: 4px 12px;
+}

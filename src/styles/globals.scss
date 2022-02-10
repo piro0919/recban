@@ -1,0 +1,39 @@
+@import "styles/breakpoints";
+@import "sass-mq";
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+2&family=Kaisei+Opti:wght@700&family=Zen+Kaku+Gothic+Antique&display=swap");
+
+html {
+  @include mq($until: tablet) {
+    font-size: 50%;
+  }
+  @include mq($from: tablet) {
+    font-size: 62.5%;
+  }
+}
+
+body {
+  background: #202124;
+  color: #bdc1c6;
+  font-family: "M PLUS 2", sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+  line-height: 1.5;
+  overflow: hidden scroll;
+}
+
+* {
+  outline: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+svg {
+  vertical-align: middle;
+}
+
+ul {
+  list-style: none;
+}

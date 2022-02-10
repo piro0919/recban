@@ -1,0 +1,58 @@
+@import "styles/breakpoints";
+@import "sass-mq";
+
+.list {
+  display: grid;
+  @include mq($until: tablet) {
+    grid-template: auto / repeat(1, 1fr);
+  }
+  @include mq($from: tablet, $until: wide) {
+    gap: 24px;
+    grid-template: auto / repeat(2, 1fr);
+  }
+  @include mq($from: wide) {
+    gap: 24px;
+    grid-template: auto / repeat(3, 1fr);
+  }
+}
+
+.itemInner {
+  @include mq($from: tablet) {
+    border: 1px solid #3c4043;
+    border-radius: 8px;
+  }
+}
+
+.item:not(:first-child) {
+  @include mq($until: tablet) {
+    border-top: 1px solid #3c4043;
+  }
+}
+
+.anchor {
+  display: block;
+  @include mq($until: tablet) {
+    padding: 12px;
+  }
+  @include mq($from: tablet) {
+    padding: 24px;
+  }
+}
+
+.viewDetailWrapper {
+  @include mq($until: tablet) {
+    display: none;
+  }
+  @include mq($from: tablet) {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 0 0;
+  }
+}
+
+.viewDetail {
+  color: #8ab4f8;
+  font-family: "Zen Kaku Gothic Antique", sans-serif;
+  font-size: 1.2rem;
+  text-decoration: underline;
+}

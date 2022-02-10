@@ -1,0 +1,10 @@
+.list {
+  display: grid;
+  gap: 8px 16px;
+  grid-template: auto / auto auto;
+  justify-content: flex-start;
+}
+
+.term::after {
+  content: ":";
+}

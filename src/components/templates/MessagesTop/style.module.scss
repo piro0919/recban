@@ -1,0 +1,10 @@
+.anchor {
+  display: grid;
+  gap: 12px;
+  grid-template: auto / auto 1fr auto;
+  padding: 12px;
+}
+
+.item:not(:first-child) .anchor {
+  border-top: 1px solid #3c4043;
+}

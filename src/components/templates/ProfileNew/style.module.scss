@@ -1,0 +1,17 @@
+@import "styles/breakpoints";
+@import "sass-mq";
+
+.wrapper {
+  @include mq($until: tablet) {
+    padding: 12px 0;
+  }
+  @include mq($from: tablet) {
+    padding: 24px 0;
+  }
+}
+
+.heading2Wrapper {
+  @include mq($until: tablet) {
+    padding: 0 12px;
+  }
+}

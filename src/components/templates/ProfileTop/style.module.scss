@@ -1,0 +1,27 @@
+@import "styles/breakpoints";
+@import "sass-mq";
+
+.wrapper {
+  display: grid;
+  @include mq($until: tablet) {
+    gap: 12px;
+    padding: 12px 0;
+  }
+  @include mq($from: tablet) {
+    gap: 24px;
+    padding: 24px 0;
+  }
+}
+
+.inner,
+.buttonWrapper {
+  @include mq($until: tablet) {
+    padding: 0 12px;
+  }
+}
+
+.buttonWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}

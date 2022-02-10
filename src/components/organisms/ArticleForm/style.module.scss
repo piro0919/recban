@@ -1,0 +1,81 @@
+@import "styles/breakpoints";
+@import "sass-mq";
+
+.formInner {
+  display: grid;
+  @include mq($until: tablet) {
+    gap: 12px;
+  }
+  @include mq($from: tablet) {
+    gap: 24px;
+  }
+}
+
+.fieldsWrapper {
+  display: grid;
+  @include mq($until: tablet) {
+    gap: 12px;
+    padding: 0 12px;
+  }
+  @include mq($from: tablet) {
+    gap: 24px;
+  }
+}
+
+.contentTextareaWrapper {
+  display: grid;
+  height: 160px;
+  width: 100%;
+}
+
+.required {
+  padding: 0 0 0 4px;
+}
+
+.fieldset {
+  border: 0;
+}
+
+.legend {
+  padding: 0 0 8px;
+}
+
+.label {
+  display: grid;
+  gap: 8px;
+  justify-items: flex-start;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+.checkboxLabel {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.ageFieldsWrapper {
+  display: flex;
+  gap: 4px;
+}
+
+.ageFieldWrapper {
+  display: flex;
+  gap: 4px;
+}
+
+.buttonWrapper {
+  @include mq($until: tablet) {
+    padding: 0 12px;
+  }
+}
+
+.errorMessage {
+  color: #f00;
+  font-size: 1.2rem;
+  padding: 4px 0 0;
+}

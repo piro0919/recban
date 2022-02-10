@@ -1,0 +1,33 @@
+.formInner {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.fieldsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.label {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+
+.label2::after {
+  content: ":";
+}
+
+.inputWrapper {
+  max-width: 200px;
+  overflow: hidden;
+}
+
+.ageWrapper {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}

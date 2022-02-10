@@ -1,0 +1,22 @@
+.inner {
+  border: 1px solid #3c4043;
+  display: grid;
+  grid-template: 120px / 1fr 32px;
+}
+
+.textareaWrapper {
+  display: grid;
+}
+
+.button {
+  background: #2d2e30;
+  border-left: 1px solid #3c4043;
+}
+
+.icon {
+  font-size: 1.6rem;
+}
+
+.icon * {
+  stroke: #bdc1c6;
+}

@@ -1,0 +1,17 @@
+.formInner {
+  display: grid;
+  gap: 12px;
+  grid-template: 1fr auto / 1fr;
+  height: 100%;
+}
+
+.fieldsWrapper {
+  border: 1px solid #3c4043;
+  display: grid;
+  grid-template: auto auto 1fr / 1fr;
+}
+
+.buttonWrapper {
+  display: flex;
+  justify-content: flex-end;
+}
