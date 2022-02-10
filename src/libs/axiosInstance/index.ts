@@ -1,8 +1,8 @@
 import axios from "axios";
 
-let baseURL = process.env.NEXT_PUBLIC_BASE_URL;
+let baseURL = "";
 
-if (!baseURL && typeof window !== "undefined") {
+if (typeof window !== "undefined") {
   baseURL = window.location.origin;
 }
 
