@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { GrSend } from "react-icons/gr";
 import styles from "./style.module.scss";
@@ -12,11 +13,24 @@ export type MessageFormProps = {
 };
 
 function MessageForm({ onSubmit }: MessageFormProps): JSX.Element {
-  const { handleSubmit, register } = useForm<FieldValues>({
+  const {
+    formState: { isSubmitted, isSubmitting },
+    handleSubmit,
+    register,
+    reset,
+  } = useForm<FieldValues>({
     defaultValues: {
       content: "",
     },
   });
+
+  useEffect(() => {
+    if (!isSubmitted) {
+      return;
+    }
+
+    reset();
+  }, [isSubmitted, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -27,7 +41,7 @@ function MessageForm({ onSubmit }: MessageFormProps): JSX.Element {
             placeholder="メッセージ *"
           />
         </div>
-        <button className={styles.button}>
+        <button className={styles.button} disabled={isSubmitting}>
           <GrSend className={styles.icon} />
         </button>
       </div>

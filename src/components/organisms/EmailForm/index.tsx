@@ -4,6 +4,7 @@ import Button from "components/atoms/Button";
 import HorizontalRule from "components/atoms/HorizontalRule";
 import Input from "components/atoms/Input";
 import Textarea from "components/atoms/Textarea";
+import { useEffect } from "react";
 
 type FieldValues = {
   subject: string;
@@ -15,12 +16,25 @@ export type EmailFormProps = {
 };
 
 function EmailForm({ onSubmit }: EmailFormProps): JSX.Element {
-  const { handleSubmit, register } = useForm<FieldValues>({
+  const {
+    formState: { isSubmitted, isSubmitting },
+    handleSubmit,
+    register,
+    reset,
+  } = useForm<FieldValues>({
     defaultValues: {
       subject: "",
       text: "",
     },
   });
+
+  useEffect(() => {
+    if (!isSubmitted) {
+      return;
+    }
+
+    reset();
+  }, [isSubmitted, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -37,7 +51,9 @@ function EmailForm({ onSubmit }: EmailFormProps): JSX.Element {
           />
         </div>
         <div className={styles.buttonWrapper}>
-          <Button type="submit">送信する</Button>
+          <Button disabled={isSubmitting} type="submit">
+            送信する
+          </Button>
         </div>
       </div>
     </form>

@@ -34,6 +34,7 @@ export type ArticleIdProps = Pick<
   | "sex"
   | "title"
   | "untilDate"
+  | "userId"
 > & {
   articleId: string;
   content: string;
@@ -63,6 +64,7 @@ function ArticleId({
   sex,
   title,
   untilDate,
+  userId,
   ...props
 }: ArticleIdProps): JSX.Element {
   const { user } = useContext(UserContext);
@@ -142,6 +144,7 @@ function ArticleId({
           title={title}
           twitterId={props.twitterId}
           untilDate={untilDate}
+          userId={userId}
         />
       ) : (
         <ArticleDetail
@@ -157,6 +160,7 @@ function ArticleId({
           sex={sex}
           title={title}
           untilDate={untilDate}
+          userId={userId}
         />
       )}
     </>
@@ -309,6 +313,7 @@ export const getServerSideProps: GetServerSideProps<
       title,
       twitterId,
       untilDate,
+      userId,
       disabledEmail: !email || !enabledContactEmail,
       isSignIn: true,
     },

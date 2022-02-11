@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useCallback } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import styles from "./style.module.scss";
 import Button, { ButtonProps } from "components/atoms/Button";
 import Heading2 from "components/atoms/Heading2";
@@ -7,6 +7,7 @@ import Heading3 from "components/atoms/Heading3";
 import HorizontalRule from "components/atoms/HorizontalRule";
 import Article from "components/molecules/Article";
 import DefinitionList from "components/molecules/DefinitionList";
+import UserContext from "contexts/UserContext";
 
 export type ArticleDetailProps = {
   age: string;
@@ -20,6 +21,7 @@ export type ArticleDetailProps = {
   sex: string;
   title: string;
   untilDate: string;
+  userId: string;
 } & (
   | {
       disabledEmail: boolean;
@@ -46,6 +48,7 @@ function ArticleDetail({
   sex,
   title,
   untilDate,
+  userId,
   ...props
 }: ArticleDetailProps): JSX.Element {
   const handleTransitionTwitter = useCallback<
@@ -57,6 +60,16 @@ function ArticleDetail({
 
     window.open(`https://twitter.com/${props.twitterId}`, "_blank");
   }, [props]);
+  const { user } = useContext(UserContext);
+  const uid = useMemo(() => {
+    if (!user) {
+      return undefined;
+    }
+
+    const { uid } = user;
+
+    return uid;
+  }, [user]);
 
   return (
     <div className={styles.wrapper}>
@@ -140,34 +153,38 @@ function ArticleDetail({
               />
             </div>
           </Article>
-          <HorizontalRule />
-          {props.isSignIn ? (
-            <div className={`${styles.buttonsWrapper} ${styles.inner2}`}>
-              <Button
-                disabled={props.disabledEmail}
-                onClick={props.onTransitionEmail}
-              >
-                メールを送信する
-              </Button>
-              <Button
-                disabled={!props.twitterId}
-                onClick={handleTransitionTwitter}
-              >
-                Twitterから連絡する
-              </Button>
-              <Button onClick={props.onSendMessage}>
-                メッセージを送信する
-              </Button>
-            </div>
-          ) : (
-            <div className={styles.inner2}>
-              <p>
-                <Link href="/signin">
-                  <a className={styles.anchor}>サインイン</a>
-                </Link>
-                すると連絡可能になります
-              </p>
-            </div>
+          {userId === uid ? null : (
+            <>
+              <HorizontalRule />
+              {props.isSignIn ? (
+                <div className={`${styles.buttonsWrapper} ${styles.inner2}`}>
+                  <Button
+                    disabled={props.disabledEmail}
+                    onClick={props.onTransitionEmail}
+                  >
+                    メールを送信する
+                  </Button>
+                  <Button
+                    disabled={!props.twitterId}
+                    onClick={handleTransitionTwitter}
+                  >
+                    Twitterから連絡する
+                  </Button>
+                  <Button onClick={props.onSendMessage}>
+                    メッセージを送信する
+                  </Button>
+                </div>
+              ) : (
+                <div className={styles.inner2}>
+                  <p>
+                    <Link href="/signin">
+                      <a className={styles.anchor}>サインイン</a>
+                    </Link>
+                    すると連絡可能になります
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </Article>
