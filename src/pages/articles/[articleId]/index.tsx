@@ -17,6 +17,7 @@ import axiosInstance from "libs/axiosInstance";
 import base from "middlewares/base";
 import {
   GetMessagesData,
+  GetMessagesQuery,
   PostMessagesBody,
   PostMessagesData,
 } from "pages/api/messages";
@@ -87,7 +88,7 @@ function ArticleId({
         query: {
           filters: `articleId:${articleId} AND applicantUserId:${uid}`,
           query: "",
-        },
+        } as GetMessagesQuery,
         url: "/api/messages",
       })
     );

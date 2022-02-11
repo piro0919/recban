@@ -1,5 +1,7 @@
+import "libs/app";
 import { createClient } from "contentful";
 import dayjs from "dayjs";
+import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { ReactElement, useCallback } from "react";
@@ -25,6 +27,7 @@ export type ArticleIdProps = Pick<
   | "place"
   | "sex"
   | "title"
+  | "twitterId"
   | "untilDate"
   | "userId"
 > & {
@@ -45,6 +48,7 @@ function ArticleId({
   place,
   sex,
   title,
+  twitterId,
   untilDate,
   userId,
 }: ArticleIdProps): JSX.Element {
@@ -52,6 +56,7 @@ function ArticleId({
   const router = useRouter();
   const handleDelete = useCallback(async () => {
     await axiosInstance.delete(`/api/articles/${articleId}`);
+    // TODO: 紐づくメッセージを削除する
 
     openSnackbar("記事を削除しました");
 
@@ -74,6 +79,7 @@ function ArticleId({
         place={place}
         sex={sex}
         title={title}
+        twitterId={twitterId}
         untilDate={untilDate}
         userId={userId}
       />
@@ -181,6 +187,33 @@ export const getServerSideProps: GetServerSideProps<
       })
     );
 
+  const db = getFirestore();
+  const collectionRef = collection(db, "users");
+  const docRef = doc(collectionRef, userId);
+  const snapshot = await getDoc(docRef);
+
+  if (!snapshot.exists()) {
+    return {
+      redirect: {
+        destination: "/signout",
+        permanent: false,
+      },
+    };
+  }
+
+  const data = snapshot.data();
+
+  if (!data) {
+    return {
+      redirect: {
+        destination: "/signout",
+        permanent: false,
+      },
+    };
+  }
+
+  const { twitterId } = data as Firestore.User;
+
   return {
     props: {
       age,
@@ -194,6 +227,7 @@ export const getServerSideProps: GetServerSideProps<
       place,
       sex,
       title,
+      twitterId,
       untilDate,
       userId,
     },

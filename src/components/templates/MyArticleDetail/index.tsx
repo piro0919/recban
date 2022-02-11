@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
+import { TwitterShareButton } from "react-share";
 import styles from "./style.module.scss";
 import Button, { ButtonProps } from "components/atoms/Button";
 import Heading2 from "components/atoms/Heading2";
@@ -21,6 +22,7 @@ export type MyArticleDetailProps = {
   place: string;
   sex: string;
   title: string;
+  twitterId: string;
   untilDate: string;
   userId: string;
 };
@@ -38,6 +40,7 @@ function MyArticleDetail({
   place,
   sex,
   title,
+  twitterId,
   untilDate,
   userId,
 }: MyArticleDetailProps): JSX.Element {
@@ -124,6 +127,17 @@ function MyArticleDetail({
               <Button onClick={handleConfirm}>記事を確認する</Button>
               <Button onClick={handleEdit}>記事を修正する</Button>
               <Button onClick={onDelete}>記事を削除する</Button>
+              {typeof window === "undefined" ? null : (
+                <TwitterShareButton
+                  className={styles.twitterShareButton}
+                  hashtags={["りくばん"]}
+                  title={title}
+                  url={`${window.location.origin}/articles/${articleId}`}
+                  via={twitterId}
+                >
+                  Twitterでシェアする
+                </TwitterShareButton>
+              )}
             </div>
           </div>
         </div>

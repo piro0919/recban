@@ -46,6 +46,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
   useEffect(() => {
     const handleStart = (url: string): void => {
       console.log(`Loading: ${url}`);
+
       NProgress.start();
     };
     const handleStop = (): void => {
