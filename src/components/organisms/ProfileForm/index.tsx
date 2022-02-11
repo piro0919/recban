@@ -33,15 +33,15 @@ function ProfileForm({
       twitterId: "",
     },
   });
-  const handleEnabledContactEmail = useCallback(() => {
-    swal({
+  const handleEnabledContactEmail = useCallback(async () => {
+    await swal({
       icon: "info",
       text: "メールによる募集および応募ができるようになります",
       title: "メールで連絡可能",
     });
   }, []);
-  const handleNotification = useCallback(() => {
-    swal({
+  const handleNotification = useCallback(async () => {
+    await swal({
       icon: "info",
       text: "メッセージが届いた際にメールが届きます",
       title: "メール通知",
