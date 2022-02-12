@@ -275,6 +275,7 @@ export const getServerSideProps: GetServerSideProps<
         sex,
         title,
         untilDate,
+        userId,
         isSignIn: false,
       },
     };

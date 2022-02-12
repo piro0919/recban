@@ -83,6 +83,7 @@ export const getServerSideProps: GetServerSideProps<
       content_type: "articles" as Contentful.CONTENT_TYPE,
       "fields.userId": userId,
       limit: 3,
+      order: "-sys.createdAt",
     })
     .then(({ items, total }) => ({
       articles: items.map(

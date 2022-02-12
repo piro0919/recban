@@ -38,3 +38,10 @@ yarn-error.log*
 
 # contentful
 contentful.d.ts
+
+# sitemap
+sitemap**.xml
+
+# service worker
+sw.js
+workbox**.js
