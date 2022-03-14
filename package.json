@@ -9,7 +9,7 @@
     "@react-hook/window-size": "3.0.7",
     "@sendgrid/mail": "7.6.0",
     "@szhsin/react-menu": "2.3.3",
-    "algoliasearch": "4.12.0",
+    "algoliasearch": "4.13.0",
     "axios": "0.24.0",
     "contentful": "9.1.6",
     "contentful-management": "7.51.1",
@@ -42,7 +42,7 @@
     "yup": "0.32.11"
   },
   "devDependencies": {
-    "@algolia/client-search": "4.12.0",
+    "@algolia/client-search": "4.13.0",
     "@types/node": "17.0.10",
     "@types/nprogress": "0.2.0",
     "@types/react": "17.0.38",
