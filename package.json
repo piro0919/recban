@@ -14,7 +14,7 @@
     "contentful": "9.1.6",
     "contentful-management": "7.51.1",
     "dayjs": "1.10.7",
-    "firebase": "9.6.4",
+    "firebase": "9.8.1",
     "firebase-admin": "10.0.2",
     "next-connect": "0.11.0",
     "next-pwa": "5.4.4",
