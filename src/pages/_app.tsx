@@ -9,6 +9,7 @@ import auth from "libs/auth";
 import fetcher from "libs/fetcher";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
+import Head from "next/head";
 import NextNProgress from "nextjs-progressbar";
 import { setCookie, destroyCookie } from "nookies";
 import { ReactElement, ReactNode, useEffect, useState } from "react";
@@ -70,42 +71,52 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
   }, []);
 
   return (
-    <SWRConfig
-      value={{
-        fetcher,
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-        revalidateOnMount: true,
-        revalidateOnReconnect: false,
-      }}
-    >
-      <UserContext.Provider value={{ userCredential }}>
-        {getLayout(<Component {...pageProps} />)}
-        <NextNProgress />
-        <IosPwaPrompt />
-        <NoSSR>
-          <Toaster
-            position="bottom-center"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: "#2d2e30",
-                color: "#e8eaed",
-                maxWidth: 400,
-              },
-            }}
-          />
-        </NoSSR>
-        <ScrollToTop
-          color="#e8eaed"
-          style={{
-            background: "#2d2e30",
-            boxShadow: "none",
-          }}
-          width="20"
+    <>
+      <Head>
+        <meta
+          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+          name="viewport"
         />
-      </UserContext.Provider>
-    </SWRConfig>
+        <link href="/manifest.json" rel="manifest" />
+        <link href="logo192.png" rel="apple-touch-icon" />
+      </Head>
+      <SWRConfig
+        value={{
+          fetcher,
+          revalidateIfStale: false,
+          revalidateOnFocus: false,
+          revalidateOnMount: true,
+          revalidateOnReconnect: false,
+        }}
+      >
+        <UserContext.Provider value={{ userCredential }}>
+          {getLayout(<Component {...pageProps} />)}
+          <NextNProgress />
+          <IosPwaPrompt />
+          <NoSSR>
+            <Toaster
+              position="bottom-center"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: "#2d2e30",
+                  color: "#e8eaed",
+                  maxWidth: 400,
+                },
+              }}
+            />
+          </NoSSR>
+          <ScrollToTop
+            color="#e8eaed"
+            style={{
+              background: "#2d2e30",
+              boxShadow: "none",
+            }}
+            width="20"
+          />
+        </UserContext.Provider>
+      </SWRConfig>
+    </>
   );
 }
 

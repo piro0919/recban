@@ -1,15 +1,24 @@
 {
   "background_color": "#ffffff",
+  "description": "",
   "display": "standalone",
   "icons": [
     {
-      "sizes": "256x256 128x128 64x64 32x32 24x24 16x16",
+      "sizes": "64x64 32x32 24x24 16x16",
       "src": "favicon.ico",
       "type": "image/x-icon"
+    },
+    {
+      "sizes": "256x256",
+      "src": "logo256.png",
+      "type": "image/png"
     }
   ],
-  "name": "れくばん！",
-  "short_name": "れくばん！",
+  "name": "りくばん！",
+  "orientation": "portrait",
+  "screenshots": [],
+  "short_name": "りくばん！",
+  "shortcuts": [],
   "start_url": ".",
   "theme_color": "#000000"
 }
