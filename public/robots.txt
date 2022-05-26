@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://recban.kk-web.link
+
+# Sitemaps
+Sitemap: https://recban.kk-web.link/sitemap.xml

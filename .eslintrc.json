@@ -11,7 +11,7 @@
   "ignorePatterns": ["*.d.ts", "*.js"],
   "overrides": [
     {
-      "excludedFiles": ["_app.tsx", "_middleware.ts"],
+      "excludedFiles": ["_app.tsx", "_document.tsx", "_middleware.ts"],
       "files": "*",
       "rules": {
         "filenames/match-exported": "off",
