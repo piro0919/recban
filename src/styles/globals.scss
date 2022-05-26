@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+2&family=Zen+Kaku+Gothic+Antique&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@700&display=swap&text=りくばん！");
+
 html {
   @include mq.mq($until: tablet) {
     font-size: 50%;
