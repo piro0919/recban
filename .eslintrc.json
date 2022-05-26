@@ -8,14 +8,10 @@
     "next/core-web-vitals",
     "prettier"
   ],
+  "ignorePatterns": ["*.d.ts", "*.js"],
   "overrides": [
     {
-      "excludedFiles": [
-        "_app.tsx",
-        "*.d.ts",
-        "next.config.js",
-        "next-sitemap.js"
-      ],
+      "excludedFiles": ["_app.tsx", "_middleware.ts"],
       "files": "*",
       "rules": {
         "filenames/match-exported": "off",
@@ -38,21 +34,83 @@
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/no-unused-vars": "off",
+    "import/newline-after-import": [
+      "error",
+      {
+        "count": 1
+      }
+    ],
     "import/order": [
       "error",
       {
         "alphabetize": {
           "caseInsensitive": true,
           "order": "asc"
-        }
+        },
+        "warnOnUnassignedImports": true
       }
     ],
+    "import/prefer-default-export": "error",
     "newline-before-return": "error",
     "no-duplicate-imports": "error",
     "no-multiple-empty-lines": [
       "error",
       {
         "max": 1
+      }
+    ],
+    "padding-line-between-statements": [
+      "error",
+      {
+        "blankLine": "always",
+        "next": [
+          "break",
+          "const",
+          "do",
+          "export",
+          "function",
+          "let",
+          "return",
+          "switch",
+          "try",
+          "while"
+        ],
+        "prev": "*"
+      },
+      {
+        "blankLine": "always",
+        "next": "*",
+        "prev": [
+          "const",
+          "do",
+          "export",
+          "function",
+          "let",
+          "return",
+          "switch",
+          "try",
+          "while"
+        ]
+      },
+      {
+        "blankLine": "never",
+        "next": "import",
+        "prev": "*"
+      },
+      {
+        "blankLine": "never",
+        "next": "case",
+        "prev": "case"
+      },
+      {
+        "blankLine": "never",
+        "next": "const",
+        "prev": "const"
+      },
+      {
+        "blankLine": "never",
+        "next": "let",
+        "prev": "let"
       }
     ],
     "react-hooks/exhaustive-deps": [
@@ -85,12 +143,6 @@
     ]
   },
   "settings": {
-    "import/resolver": {
-      "node": {
-        "moduleDirectory": [
-          "./src"
-        ]
-      }
-    }
+    "import/resolver": "node"
   }
 }

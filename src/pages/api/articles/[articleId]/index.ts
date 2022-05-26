@@ -1,9 +1,46 @@
-import { createClient, Entry } from "contentful-management";
-import apiBase from "middlewares/apiBase";
+import { Entry } from "contentful-management";
+import getEnvironment from "libs/getEnvironment";
+import getHandler from "libs/getHandler";
+
+const handler = getHandler<
+  DeleteArticlesArticleIdData | PutArticlesArticleIdData
+>();
 
 export type DeleteArticlesArticleIdQuery = {
   articleId: string;
 };
+
+type ExtendedDeleteRequest = {
+  query: DeleteArticlesArticleIdQuery;
+};
+
+export type DeleteArticlesArticleIdData = Entry;
+
+type ExtendedDeleteResponse = {
+  json: (body: DeleteArticlesArticleIdData) => void;
+};
+
+handler.delete<ExtendedDeleteRequest, ExtendedDeleteResponse>(
+  async ({ query: { articleId } }, res) => {
+    const environment = await getEnvironment();
+
+    if (!environment) {
+      res.status(404);
+      res.end();
+
+      return;
+    }
+
+    const entry = await environment.getEntry(articleId);
+    const unpublishedEntry = await entry.unpublish();
+
+    await unpublishedEntry.delete();
+
+    res.status(200);
+    res.json(unpublishedEntry);
+    res.end();
+  }
+);
 
 export type PutArticlesArticleIdBody = Contentful.IArticlesFields;
 
@@ -11,35 +48,12 @@ export type PutArticlesArticleIdQuery = {
   articleId: string;
 };
 
-export type PutArticlesArticleIdData = Entry;
-
-const handler = apiBase<PutArticlesArticleIdBody>();
-
-type ExtendedDeleteRequest = {
-  query: DeleteArticlesArticleIdQuery;
-};
-
-handler.delete<ExtendedDeleteRequest>(async ({ query: { articleId } }, res) => {
-  const client = createClient({
-    accessToken: process.env.CONTENTFUL_MANAGEMENT_API_ACCESS_TOKEN || "",
-  });
-  const space = await client.getSpace(process.env.CONTENTFUL_SPACE_ID || "");
-  const environment = await space.getEnvironment(
-    process.env.CONTENTFUL_ENVIRONMENT || ""
-  );
-  const entry = await environment.getEntry(articleId);
-  const unpublishedEntry = await entry.unpublish();
-
-  await unpublishedEntry.delete();
-
-  res.status(200);
-  res.end();
-});
-
 type ExtendedPutRequest = {
   body: PutArticlesArticleIdBody;
   query: PutArticlesArticleIdQuery;
 };
+
+export type PutArticlesArticleIdData = Entry;
 
 type ExtendedPutResponse = {
   json: (body: PutArticlesArticleIdData) => void;
@@ -47,6 +61,15 @@ type ExtendedPutResponse = {
 
 handler.put<ExtendedPutRequest, ExtendedPutResponse>(
   async ({ body, query: { articleId } }, res) => {
+    const environment = await getEnvironment();
+
+    if (!environment) {
+      res.status(404);
+      res.end();
+
+      return;
+    }
+
     const {
       ambition,
       content,
@@ -58,15 +81,8 @@ handler.put<ExtendedPutRequest, ExtendedPutResponse>(
       places,
       sex,
       title,
-      userId,
+      uid,
     } = body as ExtendedPutRequest["body"];
-    const client = createClient({
-      accessToken: process.env.CONTENTFUL_MANAGEMENT_API_ACCESS_TOKEN || "",
-    });
-    const space = await client.getSpace(process.env.CONTENTFUL_SPACE_ID || "");
-    const environment = await space.getEnvironment(
-      process.env.CONTENTFUL_ENVIRONMENT || ""
-    );
     const entry = await environment.getEntry(articleId, {
       content_type: "articles" as Contentful.CONTENT_TYPE,
     });
@@ -102,8 +118,8 @@ handler.put<ExtendedPutRequest, ExtendedPutResponse>(
       title: {
         ja: title,
       },
-      userId: {
-        ja: userId,
+      uid: {
+        ja: uid,
       },
     };
 

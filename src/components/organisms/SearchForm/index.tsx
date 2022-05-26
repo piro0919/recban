@@ -1,11 +1,11 @@
-import { SubmitHandler, useForm } from "react-hook-form";
-import styles from "./style.module.scss";
 import Button from "components/atoms/Button";
 import Input from "components/atoms/Input";
 import Select from "components/atoms/Select";
 import useGenres from "hooks/useGenres";
 import useParts from "hooks/useParts";
 import usePrefectures from "hooks/usePrefectures";
+import { SubmitHandler, useForm } from "react-hook-form";
+import styles from "./style.module.scss";
 
 type FieldValues = {
   age: string;
@@ -26,7 +26,11 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
   const genres = useGenres();
   const parts = useParts();
   const prefectures = usePrefectures();
-  const { handleSubmit, register } = useForm<FieldValues>({
+  const {
+    formState: { isSubmitting },
+    handleSubmit,
+    register,
+  } = useForm<FieldValues>({
     defaultValues,
   });
 
@@ -120,10 +124,12 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
                   label: "",
                   value: "",
                 },
-                ...prefectures.map((prefecture) => ({
-                  label: prefecture,
-                  value: prefecture,
-                })),
+                ...prefectures.flatMap(({ prefectures }) =>
+                  prefectures.map((prefecture) => ({
+                    label: prefecture,
+                    value: prefecture,
+                  }))
+                ),
               ]}
             />
           </label>
@@ -156,7 +162,9 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
             />
           </label>
         </div>
-        <Button type="submit">検索する</Button>
+        <Button disabled={isSubmitting} type="submit">
+          検索する
+        </Button>
       </div>
     </form>
   );

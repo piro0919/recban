@@ -1,0 +1,28 @@
+.multiselect {
+  background: #2d2e30;
+  color: #fff;
+}
+
+.multiselect :global(.searchWrapper) {
+  border: 0;
+  padding: 4px 8px;
+}
+
+.multiselect :global(.chip) {
+  background: transparent;
+  margin: 0;
+  padding: 0 16px 0 0;
+}
+
+.multiselect :global(.searchBox) {
+  color: #fff;
+  margin: 0;
+}
+
+.multiselect :global(.optionListContainer) {
+  background: #2d2e30;
+}
+
+.multiselect :global(.optionContainer) {
+  border: 0;
+}

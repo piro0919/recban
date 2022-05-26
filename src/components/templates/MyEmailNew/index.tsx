@@ -1,12 +1,12 @@
-import Link from "next/link";
-import { BiLinkExternal } from "react-icons/bi";
-import styles from "./style.module.scss";
 import Heading2 from "components/atoms/Heading2";
 import HorizontalRule from "components/atoms/HorizontalRule";
 import Article from "components/molecules/Article";
 import EmailForm, { EmailFormProps } from "components/organisms/EmailForm";
+import Link from "next/link";
+import { BiLinkExternal } from "react-icons/bi";
+import styles from "./style.module.scss";
 
-export type MyEmailNewProps = Pick<EmailFormProps, "onSubmit"> & {
+export type MyEmailNewProps = Pick<EmailFormProps, "disabled" | "onSubmit"> & {
   articleId?: string;
   collocutorName: string;
 };
@@ -14,6 +14,7 @@ export type MyEmailNewProps = Pick<EmailFormProps, "onSubmit"> & {
 function MyEmailNew({
   articleId,
   collocutorName,
+  disabled,
   onSubmit,
 }: MyEmailNewProps): JSX.Element {
   return (
@@ -21,7 +22,7 @@ function MyEmailNew({
       <Article
         heading={
           <div className={styles.heading2Wrapper}>
-            <Heading2>{collocutorName}</Heading2>
+            <Heading2 text={collocutorName} />
             {articleId ? (
               <Link href={`/articles/${articleId}`}>
                 <a className={styles.anchor} target="_blank">
@@ -41,7 +42,7 @@ function MyEmailNew({
         <div className={styles.inner}>
           <HorizontalRule />
           <div className={styles.inner2}>
-            <EmailForm onSubmit={onSubmit} />
+            <EmailForm disabled={disabled} onSubmit={onSubmit} />
           </div>
         </div>
       </Article>

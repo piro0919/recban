@@ -1,11 +1,11 @@
-import dayjs from "dayjs";
-import { Fragment } from "react";
+import dayjs from "libs/dayjs";
+import { Fragment, useMemo } from "react";
 import styles from "./style.module.scss";
 
 type Message = {
   content: string;
   date: string;
-  user: "applicant" | "recruiter";
+  user: string;
 };
 
 export type MessagesProps = {
@@ -14,9 +14,9 @@ export type MessagesProps = {
 };
 
 function Messages({ isApplicant, messages }: MessagesProps): JSX.Element {
-  return (
-    <div className={styles.wrapper}>
-      {messages.map(({ content, date, user }, index) => (
+  const items = useMemo(
+    () =>
+      messages.map(({ content, date, user }, index) => (
         <Fragment key={`${content}${date}`}>
           {index === 0 ||
           !dayjs(date).isSame(messages[index - 1].date, "date") ? (
@@ -38,9 +38,13 @@ function Messages({ isApplicant, messages }: MessagesProps): JSX.Element {
             <p className={styles.message}>{content}</p>
           </div>
         </Fragment>
-      ))}
-    </div>
+      )),
+    [isApplicant, messages]
   );
+
+  console.log(messages);
+
+  return <div className={styles.wrapper}>{items}</div>;
 }
 
 export default Messages;

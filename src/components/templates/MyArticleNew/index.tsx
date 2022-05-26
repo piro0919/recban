@@ -1,7 +1,7 @@
-import styles from "./style.module.scss";
 import ArticleForm, {
   ArticleFormProps,
 } from "components/organisms/ArticleForm";
+import styles from "./style.module.scss";
 
 export type MyArticleNewProps = Pick<
   ArticleFormProps,

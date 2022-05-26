@@ -1,24 +1,66 @@
+.tabList {
+  border-bottom: 1px solid #3c4043;
+  display: grid;
+  grid-auto-flow: column;
+  @include mq.mq($from: tablet) {
+    justify-content: flex-start;
+  }
+}
+
+.tab {
+  padding: 12px;
+  text-align: center;
+}
+
+.selected {
+  border-bottom: 3px solid #8ab4f8;
+}
+
 .anchor {
   color: #808080;
   display: grid;
-  gap: 12px;
-  grid-template: auto / auto 1fr auto;
+  gap: 4px 12px;
   padding: 12px;
-}
-
-.new {
-  color: #bdc1c6;
+  @include mq.mq($until: tablet) {
+    grid-template-columns: 1fr auto;
+  }
+  @include mq.mq($from: tablet) {
+    grid-template-columns: 160px 1fr auto;
+  }
 }
 
 .item:not(:first-child) .anchor {
   border-top: 1px solid #3c4043;
 }
 
+.new {
+  color: #bdc1c6;
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  @include mq.mq($until: tablet) {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+  }
+}
+
 .content {
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  @include mq.mq($until: tablet) {
+    grid-column: 1 / 3;
+    grid-row: 2 / 3;
+  }
 }
 
 .date {
   font-size: 1.2rem;
+  @include mq.mq($until: tablet) {
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
+  }
 }

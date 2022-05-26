@@ -1,9 +1,9 @@
-import styles from "./style.module.scss";
 import Heading2 from "components/atoms/Heading2";
 import Article from "components/molecules/Article";
 import ProfileForm, {
   ProfileFormProps,
 } from "components/organisms/ProfileForm";
+import styles from "./style.module.scss";
 
 export type ProfileNewProps = Pick<
   ProfileFormProps,
@@ -16,11 +16,15 @@ function ProfileNew({ defaultValues, onSubmit }: ProfileNewProps): JSX.Element {
       <Article
         heading={
           <div className={styles.heading2Wrapper}>
-            <Heading2>アカウントを作成しましょう</Heading2>
+            <Heading2 text="アカウントを作成しましょう" />
           </div>
         }
       >
-        <ProfileForm defaultValues={defaultValues} onSubmit={onSubmit} />
+        <ProfileForm
+          defaultValues={defaultValues}
+          isNew={true}
+          onSubmit={onSubmit}
+        />
       </Article>
     </div>
   );

@@ -1,22 +1,22 @@
-import "libs/admin";
 import sendgridMail, { ClientResponse } from "@sendgrid/mail";
 import { getFirestore } from "firebase-admin/firestore";
-import apiBase from "middlewares/apiBase";
+import "libs/admin";
+import getHandler from "libs/getHandler";
+
+const handler = getHandler<PostEmailBody>();
 
 export type PostEmailBody = {
-  collocutorUserId: string;
+  collocutorUid?: string;
   subject: string;
   text: string;
-  userId: string;
+  uid: string;
 };
-
-export type PostEmailData = ClientResponse;
-
-const handler = apiBase<PostEmailBody>();
 
 type ExtendedPostRequest = {
   body: PostEmailBody;
 };
+
+export type PostEmailData = ClientResponse;
 
 type ExtendedPostResponse = {
   json: (body: PostEmailData) => void;
@@ -24,11 +24,11 @@ type ExtendedPostResponse = {
 
 handler.post<ExtendedPostRequest, ExtendedPostResponse>(
   async ({ body }, res) => {
-    const { collocutorUserId, subject, text, userId } =
+    const { collocutorUid, subject, text, uid } =
       body as ExtendedPostRequest["body"];
     const db = getFirestore();
     const collectionRef = db.collection("users");
-    const userDocRef = collectionRef.doc(userId);
+    const userDocRef = collectionRef.doc(uid);
     const userSnapshot = await userDocRef.get();
 
     if (!userSnapshot.exists) {
@@ -47,27 +47,43 @@ handler.post<ExtendedPostRequest, ExtendedPostResponse>(
       return;
     }
 
-    const collocutorUserDocRef = collectionRef.doc(collocutorUserId);
-    const collocutorUserSnapshot = await collocutorUserDocRef.get();
+    let collocutorUserEmail = "";
 
-    if (!collocutorUserSnapshot.exists) {
-      res.status(404);
-      res.end();
+    if (collocutorUid) {
+      const collocutorUserDocRef = collectionRef.doc(collocutorUid);
+      const collocutorUserSnapshot = await collocutorUserDocRef.get();
 
-      return;
-    }
+      if (!collocutorUserSnapshot.exists) {
+        res.status(404);
+        res.end();
 
-    const collocutorUserData = collocutorUserSnapshot.data();
+        return;
+      }
 
-    if (!collocutorUserData) {
-      res.status(404);
-      res.end();
+      const collocutorUserData = collocutorUserSnapshot.data();
 
-      return;
+      if (!collocutorUserData) {
+        res.status(404);
+        res.end();
+
+        return;
+      }
+
+      const { email } = collocutorUserData as Firestore.User;
+
+      collocutorUserEmail = email;
+    } else {
+      if (!process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+        res.status(404);
+        res.end();
+
+        return;
+      }
+
+      collocutorUserEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
     }
 
     const { email: userEmail } = userData as Firestore.User;
-    const { email: collocutorUserEmail } = collocutorUserData as Firestore.User;
 
     sendgridMail.setApiKey(process.env.SENDGRID_API_KEY || "");
 

@@ -1,11 +1,8 @@
-@import "styles/breakpoints";
-@import "sass-mq";
-
 .wrapper {
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     padding: 12px 0;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     padding: 24px 0;
   }
 }

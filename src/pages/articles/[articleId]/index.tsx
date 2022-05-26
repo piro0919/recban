@@ -1,26 +1,25 @@
-import "libs/app";
-import { AxiosResponse } from "axios";
-import { createClient } from "contentful";
-import dayjs from "dayjs";
-import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
-import { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
-import queryString from "query-string";
-import { ReactElement, useCallback, useContext } from "react";
+import axios, { AxiosResponse } from "axios";
 import ArticleDetail, {
   ArticleDetailProps,
 } from "components/templates/ArticleDetail";
 import Layout from "components/templates/Layout";
 import Seo from "components/templates/Seo";
-import UserContext from "contexts/UserContext";
-import axiosInstance from "libs/axiosInstance";
-import base from "middlewares/base";
+import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
+import useUser from "hooks/useUser";
+import dayjs from "libs/dayjs";
+import getClient from "libs/getClient";
+import signout from "libs/signout";
+import { GetServerSideProps } from "next";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import {
   GetMessagesData,
-  GetMessagesQuery,
   PostMessagesBody,
   PostMessagesData,
 } from "pages/api/messages";
+import queryString from "query-string";
+import { ReactElement, useCallback } from "react";
+import toast from "react-hot-toast";
 
 export type ArticleIdProps = Pick<
   ArticleDetailProps,
@@ -35,7 +34,7 @@ export type ArticleIdProps = Pick<
   | "sex"
   | "title"
   | "untilDate"
-  | "userId"
+  | "uid"
 > & {
   articleId: string;
   content: string;
@@ -64,64 +63,92 @@ function ArticleId({
   place,
   sex,
   title,
+  uid,
   untilDate,
-  userId,
   ...props
 }: ArticleIdProps): JSX.Element {
-  const { user } = useContext(UserContext);
+  const { uid: userUid } = useUser();
   const router = useRouter();
   const handleSendMessage = useCallback(async () => {
-    if (!user) {
-      await router.push("/signout");
+    if (!userUid) {
+      toast(
+        <p>
+          <Link href="/signin">
+            <a
+              style={{
+                color: "#8ab4f8",
+                margin: "0 4px",
+                textDecoration: "underline",
+              }}
+            >
+              サインイン
+            </a>
+          </Link>
+          するとメッセージが送信可能になります
+        </p>
+      );
 
       return;
     }
 
-    const { uid } = user;
     const {
-      data: { hits },
-    } = await axiosInstance.get<
-      GetMessagesData,
-      AxiosResponse<GetMessagesData>
-    >(
+      data: { items },
+    } = await axios.get<GetMessagesData, AxiosResponse<GetMessagesData>>(
       queryString.stringifyUrl({
         query: {
-          filters: `articleId:${articleId} AND applicantUserId:${uid}`,
-          query: "",
-        } as GetMessagesQuery,
+          articleId,
+          applicantUserId: userUid,
+        },
         url: "/api/messages",
       })
     );
 
-    if (hits.length) {
-      const { objectID } = hits[0];
+    if (items.length) {
+      const {
+        sys: { id },
+      } = items[0];
 
-      router.push(`/${uid}/messages/${objectID}`);
+      router.push(`/${userUid}/messages/${id}`);
 
       return;
     }
 
     const {
-      data: { objectID },
-    } = await axiosInstance.post<
+      data: {
+        sys: { id },
+      },
+    } = await axios.post<
       PostMessagesData,
       AxiosResponse<PostMessagesData>,
       PostMessagesBody
-    >("/api/messages", { articleId, applicantUserId: uid });
+    >("/api/messages", { articleId, applicantUid: userUid });
 
-    router.push(`/${uid}/messages/${objectID}`);
-  }, [articleId, router, user]);
-  const handleTransitionEmail = useCallback(async () => {
-    if (!user) {
-      await router.push("/signout");
+    router.push(`/${userUid}/messages/${id}`);
+  }, [articleId, router, userUid]);
+  const handleTransitionEmail = useCallback(() => {
+    if (!userUid) {
+      toast(
+        <p>
+          <Link href="/signin">
+            <a
+              style={{
+                color: "#8ab4f8",
+                margin: "0 4px",
+                textDecoration: "underline",
+              }}
+            >
+              サインイン
+            </a>
+          </Link>
+          するとメールが送信可能になります
+        </p>
+      );
 
       return;
     }
 
-    const { uid } = user;
-
-    await router.push(`/${uid}/articles/${articleId}/email/new`);
-  }, [articleId, router, user]);
+    router.push(`/${userUid}/articles/${articleId}/email/new`);
+  }, [articleId, router, userUid]);
 
   return (
     <>
@@ -144,8 +171,8 @@ function ArticleId({
           sex={sex}
           title={title}
           twitterId={props.twitterId}
+          uid={uid}
           untilDate={untilDate}
-          userId={userId}
         />
       ) : (
         <ArticleDetail
@@ -160,8 +187,8 @@ function ArticleId({
           place={place}
           sex={sex}
           title={title}
+          uid={uid}
           untilDate={untilDate}
-          userId={userId}
         />
       )}
     </>
@@ -179,38 +206,14 @@ type ParsedUrlQuery = {
 export const getServerSideProps: GetServerSideProps<
   ArticleIdProps,
   ParsedUrlQuery
-> = async (ctx) => {
-  const { params, req, res } = ctx;
+> = async ({ params }) => {
+  const client = getClient();
 
-  if (!params) {
-    return {
-      redirect: {
-        destination: "/signout",
-        permanent: false,
-      },
-    };
+  if (!params || !client) {
+    return signout;
   }
 
   const { articleId } = params;
-
-  if (
-    !process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN ||
-    !process.env.CONTENTFUL_ENVIRONMENT ||
-    !process.env.CONTENTFUL_SPACE_ID
-  ) {
-    return {
-      redirect: {
-        destination: "/signout",
-        permanent: false,
-      },
-    };
-  }
-
-  const client = createClient({
-    accessToken: process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN,
-    environment: process.env.CONTENTFUL_ENVIRONMENT,
-    space: process.env.CONTENTFUL_SPACE_ID,
-  });
   const {
     age,
     ambition,
@@ -222,8 +225,8 @@ export const getServerSideProps: GetServerSideProps<
     place,
     sex,
     title,
+    uid,
     untilDate,
-    userId,
   } = await client
     .getEntry<Contentful.IArticlesFields>(articleId)
     .then(
@@ -239,7 +242,7 @@ export const getServerSideProps: GetServerSideProps<
           places,
           sex,
           title,
-          userId,
+          uid,
         },
         sys: { createdAt },
       }) => ({
@@ -248,7 +251,7 @@ export const getServerSideProps: GetServerSideProps<
         frequency,
         sex,
         title,
-        userId,
+        uid,
         age: `${minAge}歳 〜 ${maxAge}歳`,
         fromDate: dayjs(createdAt).format("YYYY.MM.DD"),
         genre: genres.join(", "),
@@ -257,47 +260,17 @@ export const getServerSideProps: GetServerSideProps<
         untilDate: dayjs(createdAt).add(3, "months").format("YYYY.MM.DD"),
       })
     );
-
-  try {
-    await base().run(req, res);
-  } catch (e) {
-    return {
-      props: {
-        age,
-        ambition,
-        articleId,
-        content,
-        frequency,
-        fromDate,
-        genre,
-        part,
-        place,
-        sex,
-        title,
-        untilDate,
-        userId,
-        isSignIn: false,
-      },
-    };
-  }
-
   const db = getFirestore();
   const collectionRef = collection(db, "users");
-  const docRef = doc(collectionRef, userId);
+  const docRef = doc(collectionRef, uid);
   const snapshot = await getDoc(docRef);
 
   if (!snapshot.exists()) {
-    return {
-      redirect: {
-        destination: "/signout",
-        permanent: false,
-      },
-    };
+    return signout;
   }
 
-  const data = snapshot.data();
-  const { email, enabledContactEmail, name, twitterId } =
-    data as Firestore.User;
+  const { enabledContactEmail, name, twitterId } =
+    snapshot.data() as Firestore.User;
 
   return {
     props: {
@@ -314,9 +287,9 @@ export const getServerSideProps: GetServerSideProps<
       sex,
       title,
       twitterId,
+      uid,
       untilDate,
-      userId,
-      disabledEmail: !email || !enabledContactEmail,
+      disabledEmail: !enabledContactEmail,
       isSignIn: true,
     },
   };

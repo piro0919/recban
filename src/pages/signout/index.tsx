@@ -1,34 +1,35 @@
-import { useRouter } from "next/router";
-import React, { ReactElement, useContext, useEffect, useState } from "react";
 import Layout from "components/templates/Layout";
 import Seo from "components/templates/Seo";
-import UserContext from "contexts/UserContext";
+import useUser from "hooks/useUser";
 import auth from "libs/auth";
+import { useRouter } from "next/router";
+import { ReactElement, useEffect } from "react";
+import { useBoolean } from "usehooks-ts";
 
 function Signout(): JSX.Element {
-  const { user } = useContext(UserContext);
-  const [isSignedOut, setIsSignedOut] = useState(false);
+  const { uid } = useUser();
+  const { setTrue: onIsSignedOut, value: isSignedOut } = useBoolean(false);
   const router = useRouter();
 
   useEffect(() => {
     auth.signOut().then(() => {
-      setIsSignedOut(true);
+      onIsSignedOut();
     });
-  }, []);
+  }, [onIsSignedOut]);
 
   useEffect(() => {
-    if (!isSignedOut || user) {
+    if (!isSignedOut || uid) {
       return;
     }
 
-    router.push("/");
-  }, [router, isSignedOut, user]);
+    router.replace("/signin");
+  }, [router, isSignedOut, uid]);
 
   return <Seo noindex={true} title="サインアウト" />;
 }
 
 Signout.getLayout = function getLayout(page: ReactElement): JSX.Element {
-  return <Layout hideRecruit={true}>{page}</Layout>;
+  return <Layout>{page}</Layout>;
 };
 
 export default Signout;

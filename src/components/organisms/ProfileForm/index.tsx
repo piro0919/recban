@@ -1,11 +1,14 @@
-import { useCallback } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { FcInfo } from "react-icons/fc";
-import swal from "sweetalert";
-import styles from "./style.module.scss";
+import { yupResolver } from "@hookform/resolvers/yup";
 import Button from "components/atoms/Button";
+import Checkbox from "components/atoms/Checkbox";
 import HorizontalRule from "components/atoms/HorizontalRule";
 import Input from "components/atoms/Input";
+import { useCallback, useEffect } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { FcInfo } from "react-icons/fc";
+import * as yup from "yup";
+import styles from "./style.module.scss";
 
 type FieldValues = {
   email: string;
@@ -15,53 +18,83 @@ type FieldValues = {
   twitterId: string;
 };
 
+const schema = yup
+  .object({
+    email: yup
+      .string()
+      .email("メールアドレスの形式で入力してください")
+      .when("enabledContactEmail", {
+        is: true,
+        then: yup
+          .string()
+          .required(
+            "メールで連絡を可能にしたい場合、メールアドレスを入力してください"
+          ),
+      })
+      .when("notification", {
+        is: true,
+        then: yup
+          .string()
+          .required(
+            "メールで通知を受け取りたい場合、メールアドレスを入力してください"
+          ),
+      }),
+    name: yup.string().required("お名前 / ハンドルネームを入力してください"),
+  })
+  .required();
+
 export type ProfileFormProps = {
-  defaultValues?: FieldValues;
+  defaultValues: FieldValues;
+  isNew: boolean;
   onSubmit: SubmitHandler<FieldValues>;
 };
 
 function ProfileForm({
   defaultValues,
+  isNew,
   onSubmit,
 }: ProfileFormProps): JSX.Element {
-  const { handleSubmit, register } = useForm<FieldValues>({
-    defaultValues: defaultValues || {
-      email: "",
-      enabledContactEmail: false,
-      name: "",
-      notification: false,
-      twitterId: "",
-    },
+  const {
+    formState: { errors, isSubmitting },
+    handleSubmit,
+    register,
+    reset,
+  } = useForm<FieldValues>({
+    defaultValues,
+    resolver: yupResolver(schema),
   });
-  const handleEnabledContactEmail = useCallback(async () => {
-    await swal({
-      icon: "info",
-      text: "メールによる募集および応募ができるようになります",
-      title: "メールで連絡可能",
-    });
+  const handleEnabledContactEmail = useCallback(() => {
+    toast("メールによる募集および応募が可能になります");
   }, []);
-  const handleNotification = useCallback(async () => {
-    await swal({
-      icon: "info",
-      text: "メッセージが届いた際にメールが届きます",
-      title: "メール通知",
-    });
+  const handleNotification = useCallback(() => {
+    toast("メッセージが届いた際にメールが届きます");
   }, []);
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className={styles.formInner}>
         <div className={styles.fieldsWrapper}>
-          <label className={styles.label}>
-            <span>
-              お名前 / ハンドルネーム<abbr className={styles.required}>*</abbr>
-            </span>
-            <Input {...register("name", { required: true })} />
-          </label>
-          <label className={styles.label}>
-            <span>メールアドレス</span>
-            <Input {...register("email")} type="email" />
-          </label>
+          <div className={styles.fieldWrapper2}>
+            <label className={styles.label}>
+              <span>
+                お名前 / ハンドルネーム
+                <abbr className={styles.required}>*</abbr>
+              </span>
+              <Input {...register("name", { required: true })} />
+            </label>
+            <p className={styles.error}>{errors.name?.message}</p>
+          </div>
+          <div className={styles.fieldWrapper2}>
+            <label className={styles.label}>
+              <span>メールアドレス</span>
+              <Input {...register("email")} type="email" />
+            </label>
+            <p className={styles.error}>{errors.email?.message}</p>
+          </div>
           <label className={styles.label}>
             <span>TwitterID</span>
             <Input {...register("twitterId")} />
@@ -71,7 +104,7 @@ function ProfileForm({
               <span>
                 メールで連絡可能<abbr className={styles.required}>*</abbr>
               </span>
-              <input {...register("enabledContactEmail")} type="checkbox" />
+              <Checkbox {...register("enabledContactEmail")} />
             </label>
             <button onClick={handleEnabledContactEmail} type="button">
               <FcInfo />
@@ -82,7 +115,7 @@ function ProfileForm({
               <span>
                 メール通知<abbr className={styles.required}>*</abbr>
               </span>
-              <input {...register("notification")} type="checkbox" />
+              <Checkbox {...register("notification")} />
             </label>
             <button onClick={handleNotification} type="button">
               <FcInfo />
@@ -91,8 +124,8 @@ function ProfileForm({
         </div>
         <HorizontalRule />
         <div className={styles.buttonWrapper}>
-          <Button type="submit">
-            {defaultValues ? "修正する" : "作成する"}
+          <Button disabled={isSubmitting} type="submit">
+            {isNew ? "作成する" : "修正する"}
           </Button>
         </div>
       </div>

@@ -1,7 +1,7 @@
-import styles from "./style.module.scss";
 import ProfileForm, {
   ProfileFormProps,
 } from "components/organisms/ProfileForm";
+import styles from "./style.module.scss";
 
 export type ProfileEditProps = Pick<
   ProfileFormProps,
@@ -14,7 +14,11 @@ function ProfileEdit({
 }: ProfileEditProps): JSX.Element {
   return (
     <div className={styles.wrapper}>
-      <ProfileForm defaultValues={defaultValues} onSubmit={onSubmit} />
+      <ProfileForm
+        defaultValues={defaultValues}
+        isNew={false}
+        onSubmit={onSubmit}
+      />
     </div>
   );
 }

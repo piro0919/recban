@@ -1,15 +1,16 @@
-import { createClient, Entry } from "contentful-management";
-import apiBase from "middlewares/apiBase";
+import { Entry } from "contentful-management";
+import getEnvironment from "libs/getEnvironment";
+import getHandler from "libs/getHandler";
+
+const handler = getHandler<PostArticlesBody>();
 
 export type PostArticlesBody = Contentful.IArticlesFields;
-
-export type PostArticlesData = Entry;
-
-const handler = apiBase<PostArticlesBody>();
 
 type ExtendedPostRequest = {
   body: PostArticlesBody;
 };
+
+export type PostArticlesData = Entry;
 
 type ExtendedPostResponse = {
   json: (body: PostArticlesData) => void;
@@ -28,15 +29,17 @@ handler.post<ExtendedPostRequest, ExtendedPostResponse>(
       places,
       sex,
       title,
-      userId,
+      uid,
     } = body as ExtendedPostRequest["body"];
-    const client = createClient({
-      accessToken: process.env.CONTENTFUL_MANAGEMENT_API_ACCESS_TOKEN || "",
-    });
-    const space = await client.getSpace(process.env.CONTENTFUL_SPACE_ID || "");
-    const environment = await space.getEnvironment(
-      process.env.CONTENTFUL_ENVIRONMENT || ""
-    );
+    const environment = await getEnvironment();
+
+    if (!environment) {
+      res.status(404);
+      res.end();
+
+      return;
+    }
+
     const entry = await environment.createEntry(
       "articles" as Contentful.CONTENT_TYPE,
       {
@@ -71,8 +74,8 @@ handler.post<ExtendedPostRequest, ExtendedPostResponse>(
           title: {
             ja: title,
           },
-          userId: {
-            ja: userId,
+          uid: {
+            ja: uid,
           },
         },
       }

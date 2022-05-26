@@ -1,49 +1,62 @@
-@import "styles/breakpoints";
-@import "sass-mq";
-
 .list {
   display: grid;
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     grid-template: auto / repeat(1, 1fr);
   }
-  @include mq($from: tablet, $until: wide) {
+  @include mq.mq($from: tablet, $until: wide) {
     gap: 24px;
     grid-template: auto / repeat(2, 1fr);
   }
-  @include mq($from: wide) {
+  @include mq.mq($from: wide) {
     gap: 24px;
     grid-template: auto / repeat(3, 1fr);
   }
 }
 
 .itemInner {
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     border: 1px solid #3c4043;
     border-radius: 8px;
   }
 }
 
 .item:not(:first-child) {
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     border-top: 1px solid #3c4043;
   }
 }
 
 .anchor {
   display: block;
-  @include mq($until: tablet) {
+  overflow: hidden;
+  position: relative;
+  @include mq.mq($until: tablet) {
     padding: 12px;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     padding: 24px;
   }
 }
 
+.imageWrapper {
+  bottom: 0;
+  height: 75%;
+  opacity: 0.15;
+  position: absolute;
+  width: 75%;
+  @include mq.mq($until: tablet) {
+    right: 0;
+  }
+  @include mq.mq($from: tablet) {
+    right: -10%;
+  }
+}
+
 .viewDetailWrapper {
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     display: none;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     display: flex;
     justify-content: flex-end;
     padding: 12px 0 0;

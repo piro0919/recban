@@ -1,12 +1,9 @@
-@import "styles/breakpoints";
-@import "sass-mq";
-
 .formInner {
   display: grid;
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     gap: 12px;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     gap: 24px;
   }
 }
@@ -14,13 +11,18 @@
 .fieldsWrapper {
   display: grid;
   justify-content: flex-start;
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     gap: 12px;
     padding: 0 12px;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     gap: 24px;
   }
+}
+
+.fieldWrapper2 {
+  display: grid;
+  gap: 4px;
 }
 
 .label {
@@ -33,8 +35,13 @@
   padding: 0 0 0 4px;
 }
 
+.error {
+  color: #f00;
+  font-size: 1.2rem;
+}
+
 .buttonWrapper {
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     padding: 0 12px;
   }
 }

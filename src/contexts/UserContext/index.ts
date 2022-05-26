@@ -1,12 +1,12 @@
-import { User } from "firebase/auth";
+import { UserCredential } from "firebase/auth";
 import { createContext } from "react";
 
 export type UserValue = {
-  user?: User;
+  userCredential?: UserCredential;
 };
 
 const UserContext = createContext<UserValue>({
-  user: undefined,
+  userCredential: undefined,
 });
 
 export default UserContext;

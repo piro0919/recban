@@ -1,28 +1,25 @@
-@import "styles/breakpoints";
-@import "sass-mq";
-
 .wrapper {
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     padding: 12px 0;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     padding: 24px 0;
   }
 }
 
 .inner {
   display: grid;
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     gap: 12px;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     gap: 24px;
   }
 }
 
 .heading2Wrapper,
 .inner2 {
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     padding: 0 12px;
   }
 }

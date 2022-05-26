@@ -1,8 +1,10 @@
-import Link from "next/link";
-import styles from "./style.module.scss";
 import Heading2 from "components/atoms/Heading2";
 import Article from "components/molecules/Article";
 import DefinitionList from "components/molecules/DefinitionList";
+import Image from "next/image";
+import Link from "next/link";
+import { useMemo } from "react";
+import styles from "./style.module.scss";
 
 type Article = {
   age: string;
@@ -19,32 +21,43 @@ type Article = {
 
 export type ArticleListProps = {
   articles: Article[];
-  userId?: string;
+  uid?: string;
 };
 
-function ArticleList({ articles, userId }: ArticleListProps): JSX.Element {
-  return (
-    <ul className={styles.list}>
-      {articles.map(
-        ({
-          age,
-          ambition,
-          frequency,
-          fromDate,
-          genre,
-          id,
-          part,
-          place,
-          sex,
-          title,
-        }) => (
+function ArticleList({ articles, uid }: ArticleListProps): JSX.Element {
+  const items = useMemo(
+    () =>
+      articles.map(
+        (
+          {
+            age,
+            ambition,
+            frequency,
+            fromDate,
+            genre,
+            id,
+            part,
+            place,
+            sex,
+            title,
+          },
+          index
+        ) => (
           <li className={styles.item} key={id}>
             <div className={styles.itemInner}>
-              <Link
-                href={userId ? `/${userId}/articles/${id}` : `/articles/${id}`}
-              >
+              <Link href={uid ? `/${uid}/articles/${id}` : `/articles/${id}`}>
                 <a className={styles.anchor}>
-                  <Article heading={<Heading2>{title}</Heading2>}>
+                  <div className={styles.imageWrapper}>
+                    <Image
+                      alt=""
+                      layout="fill"
+                      objectFit="contain"
+                      objectPosition="center right"
+                      src={`/images/0${(index % 6) + 1}.png`}
+                      unoptimized={true}
+                    />
+                  </div>
+                  <Article heading={<Heading2 text={title} />}>
                     <div>
                       <DefinitionList
                         definitions={[
@@ -92,9 +105,11 @@ function ArticleList({ articles, userId }: ArticleListProps): JSX.Element {
             </div>
           </li>
         )
-      )}
-    </ul>
+      ),
+    [articles, uid]
   );
+
+  return <ul className={styles.list}>{items}</ul>;
 }
 
 export default ArticleList;

@@ -1,34 +1,24 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { MouseEventHandler, useCallback, useContext, useMemo } from "react";
-import { CopyToClipboard, Props } from "react-copy-to-clipboard";
-import { useSnackbar } from "react-simple-snackbar";
-import styles from "./style.module.scss";
 import Heading2 from "components/atoms/Heading2";
 import Article from "components/molecules/Article";
-import UserContext from "contexts/UserContext";
+import useUser from "hooks/useUser";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { MouseEventHandler, useCallback } from "react";
+import toast from "react-hot-toast";
+import { useCopyToClipboard } from "usehooks-ts";
+import styles from "./style.module.scss";
 
 function AboutTop(): JSX.Element {
-  const { user } = useContext(UserContext);
-  const uid = useMemo(() => {
-    if (!user) {
-      return undefined;
-    }
-
-    const { uid } = user;
-
-    return uid;
-  }, [user]);
+  const { uid } = useUser();
   const router = useRouter();
-  const [openSnackbar] = useSnackbar();
   const handleClick = useCallback<MouseEventHandler<HTMLAnchorElement>>(
     (e) => {
       e.preventDefault();
 
       if (!uid) {
-        openSnackbar(
+        toast(
           <p>
-            <Link href="signin">
+            <Link href="/signin">
               <a
                 style={{
                   color: "#8ab4f8",
@@ -40,7 +30,8 @@ function AboutTop(): JSX.Element {
               </a>
             </Link>
             すると連絡可能になります
-          </p>
+          </p>,
+          { id: "_app" }
         );
 
         return;
@@ -48,11 +39,14 @@ function AboutTop(): JSX.Element {
 
       router.push(`/${uid}/report`);
     },
-    [openSnackbar, router, uid]
+    [router, uid]
   );
-  const handleCopy = useCallback<NonNullable<Props["onCopy"]>>(() => {
-    openSnackbar("メールアドレスをコピーしました");
-  }, [openSnackbar]);
+  const [_, copy] = useCopyToClipboard();
+  const handleCopy = useCallback(async () => {
+    await copy(process.env.NEXT_PUBLIC_ADMIN_EMAIL || "");
+
+    toast.success("メールアドレスをコピーしました", { id: "_app" });
+  }, [copy]);
 
   return (
     <div className={styles.wrapper}>
@@ -60,7 +54,7 @@ function AboutTop(): JSX.Element {
         <Article
           heading={
             <div className={styles.heading2Wrapper}>
-              <Heading2>サービス概要</Heading2>
+              <Heading2 text="サービス概要" />
             </div>
           }
         >
@@ -73,7 +67,7 @@ function AboutTop(): JSX.Element {
         <Article
           heading={
             <div className={styles.heading2Wrapper}>
-              <Heading2>ご利用規約</Heading2>
+              <Heading2 text="ご利用規約" />
             </div>
           }
         >
@@ -102,14 +96,14 @@ function AboutTop(): JSX.Element {
               <li>
                 ご利用規約を守られない方や一般常識から著しく逸脱している行動や言動を行われた方につきましては、事前の連絡なくアカウントをブロックさせていただきます
               </li>
-              <li>事前の連絡なくサービスを終了する可能性もございます</li>
+              <li>事前の連絡なくサービスを終了する可能性がございます</li>
             </ul>
           </div>
         </Article>
         <Article
           heading={
             <div className={styles.heading2Wrapper}>
-              <Heading2>運営への連絡</Heading2>
+              <Heading2 text="運営への連絡" />
             </div>
           }
         >
@@ -143,7 +137,7 @@ function AboutTop(): JSX.Element {
         <Article
           heading={
             <div className={styles.heading2Wrapper}>
-              <Heading2>寄付</Heading2>
+              <Heading2 text="寄付" />
             </div>
           }
         >
@@ -151,7 +145,7 @@ function AboutTop(): JSX.Element {
             <p>
               りくばん！ではサービスの使いやすさを優先するため、広告の掲載を行っておりません。
               <br />
-              そのため、サーバー代などの運営費用につきましては、すべて自腹で支払っております。
+              そのため、サーバー代などの運営費用につきましては、すべて弊社で支払っております。
               <br />
               もし、りくばん！を通してかけがえのないバンドメンバーに出会えた方がおられましたら、心ばかり寄付していただけますと幸いです。
             </p>
@@ -166,14 +160,9 @@ function AboutTop(): JSX.Element {
                   Amazon ギフト券
                 </a>
                 （
-                <CopyToClipboard
-                  onCopy={handleCopy}
-                  text={process.env.NEXT_PUBLIC_ADMIN_EMAIL || ""}
-                >
-                  <button className={styles.anchor}>
-                    メールアドレスをコピーする
-                  </button>
-                </CopyToClipboard>
+                <button className={styles.anchor} onClick={handleCopy}>
+                  メールアドレスをコピーする
+                </button>
                 ）
               </li>
               <li>

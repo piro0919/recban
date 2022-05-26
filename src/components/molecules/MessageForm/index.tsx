@@ -1,8 +1,10 @@
+import Textarea from "components/atoms/Textarea";
+import { Circle } from "rc-progress";
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { GrSend } from "react-icons/gr";
+import stringLength from "string-length";
 import styles from "./style.module.scss";
-import Textarea from "components/atoms/Textarea";
 
 type FieldValues = {
   content: string;
@@ -14,10 +16,11 @@ export type MessageFormProps = {
 
 function MessageForm({ onSubmit }: MessageFormProps): JSX.Element {
   const {
-    formState: { isSubmitted, isSubmitting },
+    formState: { isSubmitSuccessful, isSubmitting },
     handleSubmit,
     register,
     reset,
+    watch,
   } = useForm<FieldValues>({
     defaultValues: {
       content: "",
@@ -25,20 +28,29 @@ function MessageForm({ onSubmit }: MessageFormProps): JSX.Element {
   });
 
   useEffect(() => {
-    if (!isSubmitted) {
+    if (!isSubmitSuccessful) {
       return;
     }
 
     reset();
-  }, [isSubmitted, reset]);
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className={styles.inner}>
         <div className={styles.textareaWrapper}>
           <Textarea
-            {...register("content", { required: true })}
-            placeholder="メッセージ *"
+            {...register("content", { maxLength: 200, required: true })}
+            maxLength={200}
+            placeholder="メッセージ *（200文字以内）"
+          />
+          <Circle
+            className={styles.circle}
+            percent={(stringLength(watch("content")) / 200) * 100}
+            strokeColor="#8ab4f8"
+            strokeWidth={12}
+            trailColor="#3c4043"
+            trailWidth={8}
           />
         </div>
         <button className={styles.button} disabled={isSubmitting}>

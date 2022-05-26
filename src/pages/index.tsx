@@ -1,21 +1,27 @@
-import { createClient } from "contentful";
-import dayjs from "dayjs";
-import { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
-import queryString from "query-string";
-import { ReactElement, useCallback } from "react";
 import ArticlesTop, {
   ArticlesTopProps,
 } from "components/templates/ArticlesTop";
+import LandingTop from "components/templates/LandingTop";
 import Layout from "components/templates/Layout";
 import Seo from "components/templates/Seo";
+import dayjs from "libs/dayjs";
+import getClient from "libs/getClient";
+import signout from "libs/signout";
+import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
+import nookies from "nookies";
+import queryString from "query-string";
+import { useCallback } from "react";
 
-export type PagesProps = Pick<
-  ArticlesTopProps,
-  "articles" | "defaultValues" | "total"
->;
+export type PagesProps =
+  | (Pick<ArticlesTopProps, "articles" | "defaultValues" | "total"> & {
+      isFirstAccess: false;
+    })
+  | {
+      isFirstAccess: true;
+    };
 
-function Pages({ articles, defaultValues, total }: PagesProps): JSX.Element {
+function Pages(props: PagesProps): JSX.Element {
   const router = useRouter();
   const handleSubmit = useCallback<ArticlesTopProps["onSubmit"]>(
     (data) => {
@@ -29,24 +35,41 @@ function Pages({ articles, defaultValues, total }: PagesProps): JSX.Element {
 
   return (
     <>
-      <Seo noindex={false} title="バンドメンバーを見つける" />
-      <ArticlesTop
-        articles={articles}
-        defaultValues={defaultValues}
-        onSubmit={handleSubmit}
-        total={total}
-      />
+      <Seo noindex={false} title="バンドメンバーを見つけよう！" />
+      {props.isFirstAccess ? (
+        <LandingTop />
+      ) : (
+        <Layout>
+          <ArticlesTop
+            articles={props.articles}
+            defaultValues={props.defaultValues}
+            onSubmit={handleSubmit}
+            total={props.total}
+          />
+        </Layout>
+      )}
     </>
   );
 }
 
-Pages.getLayout = function getLayout(page: ReactElement): JSX.Element {
-  return <Layout>{page}</Layout>;
-};
+export const getServerSideProps: GetServerSideProps<PagesProps> = async (
+  ctx
+) => {
+  const { isFirstAccess } = nookies.get(ctx);
 
-export const getServerSideProps: GetServerSideProps<PagesProps> = async ({
-  query: { age, ambition, genre, part, place, query, sex },
-}) => {
+  if (isFirstAccess !== "false") {
+    return {
+      props: {
+        isFirstAccess: true,
+      },
+    };
+  }
+
+  const {
+    query: { age, ambition, genre, part, place, query, sex },
+  } = ctx;
+  const client = getClient();
+
   if (
     Array.isArray(age) ||
     Array.isArray(ambition) ||
@@ -54,34 +77,12 @@ export const getServerSideProps: GetServerSideProps<PagesProps> = async ({
     Array.isArray(part) ||
     Array.isArray(place) ||
     Array.isArray(query) ||
-    Array.isArray(sex)
+    Array.isArray(sex) ||
+    !client
   ) {
-    return {
-      redirect: {
-        destination: "/signout",
-        permanent: false,
-      },
-    };
+    return signout;
   }
 
-  if (
-    !process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN ||
-    !process.env.CONTENTFUL_ENVIRONMENT ||
-    !process.env.CONTENTFUL_SPACE_ID
-  ) {
-    return {
-      redirect: {
-        destination: "/signout",
-        permanent: false,
-      },
-    };
-  }
-
-  const client = createClient({
-    accessToken: process.env.CONTENTFUL_DELIVERY_API_ACCESS_TOKEN,
-    environment: process.env.CONTENTFUL_ENVIRONMENT,
-    space: process.env.CONTENTFUL_SPACE_ID,
-  });
   const { articles, total } = await client
     .getEntries<Contentful.IArticlesFields>({
       query,
@@ -96,6 +97,7 @@ export const getServerSideProps: GetServerSideProps<PagesProps> = async ({
       limit: 24,
     })
     .then(({ items, total }) => ({
+      total,
       articles: items.map(
         ({
           fields: {
@@ -123,7 +125,6 @@ export const getServerSideProps: GetServerSideProps<PagesProps> = async ({
           place: places.join(", "),
         })
       ),
-      total: `${total.toLocaleString()} 件`,
     }));
 
   return {
@@ -139,6 +140,7 @@ export const getServerSideProps: GetServerSideProps<PagesProps> = async ({
         query: query || "",
         sex: sex || "",
       },
+      isFirstAccess: false,
     },
   };
 };

@@ -1,13 +1,13 @@
-import Link from "next/link";
-import { useCallback, useContext, useMemo } from "react";
-import styles from "./style.module.scss";
 import Button, { ButtonProps } from "components/atoms/Button";
 import Heading2 from "components/atoms/Heading2";
 import Heading3 from "components/atoms/Heading3";
 import HorizontalRule from "components/atoms/HorizontalRule";
 import Article from "components/molecules/Article";
 import DefinitionList from "components/molecules/DefinitionList";
-import UserContext from "contexts/UserContext";
+import useUser from "hooks/useUser";
+import Link from "next/link";
+import { useCallback } from "react";
+import styles from "./style.module.scss";
 
 export type ArticleDetailProps = {
   age: string;
@@ -20,8 +20,8 @@ export type ArticleDetailProps = {
   place: string;
   sex: string;
   title: string;
+  uid: string;
   untilDate: string;
-  userId: string;
 } & (
   | {
       disabledEmail: boolean;
@@ -47,8 +47,8 @@ function ArticleDetail({
   place,
   sex,
   title,
+  uid,
   untilDate,
-  userId,
   ...props
 }: ArticleDetailProps): JSX.Element {
   const handleTransitionTwitter = useCallback<
@@ -60,23 +60,14 @@ function ArticleDetail({
 
     window.open(`https://twitter.com/${props.twitterId}`, "_blank");
   }, [props]);
-  const { user } = useContext(UserContext);
-  const uid = useMemo(() => {
-    if (!user) {
-      return undefined;
-    }
-
-    const { uid } = user;
-
-    return uid;
-  }, [user]);
+  const { loading, uid: userUid } = useUser();
 
   return (
     <div className={styles.wrapper}>
       <Article
         heading={
           <div className={styles.heading2Wrapper}>
-            <Heading2>{title}</Heading2>
+            <Heading2 text={title} />
           </div>
         }
       >
@@ -138,7 +129,7 @@ function ArticleDetail({
                   },
                   {
                     description: props.isSignIn ? (
-                      props.name
+                      `${props.name} さん`
                     ) : (
                       <p>
                         <Link href="/signin">
@@ -153,7 +144,7 @@ function ArticleDetail({
               />
             </div>
           </Article>
-          {userId === uid ? null : (
+          {loading || uid === userUid ? null : (
             <>
               <HorizontalRule />
               {props.isSignIn ? (

@@ -1,12 +1,9 @@
-@import "styles/breakpoints";
-@import "sass-mq";
-
 .wrapper {
   height: 100%;
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     padding: 12px 0;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     padding: 24px 0;
   }
 }
@@ -15,10 +12,10 @@
   display: grid;
   grid-template: auto 1fr/1fr;
   height: 100%;
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     gap: 12px;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     gap: 24px;
   }
 }
@@ -30,7 +27,7 @@
 
 .heading2Wrapper,
 .inner2 {
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     padding: 0 12px;
   }
 }
@@ -52,10 +49,10 @@
   display: grid;
   grid-template: 1fr auto/1fr;
   height: 100%;
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     gap: 12px;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     gap: 24px;
   }
 }

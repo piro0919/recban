@@ -6,6 +6,16 @@
 
 .textareaWrapper {
   display: grid;
+  position: relative;
+}
+
+.circle {
+  bottom: 0;
+  height: 24px;
+  margin: 4px;
+  position: absolute;
+  right: 0;
+  width: 24px;
 }
 
 .button {

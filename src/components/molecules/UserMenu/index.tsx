@@ -1,6 +1,7 @@
-import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
+import { Menu, MenuItem, MenuButton, SubMenu } from "@szhsin/react-menu";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useCallback } from "react";
 import swal from "sweetalert";
 import usePwa from "use-pwa";
@@ -9,10 +10,10 @@ import styles from "./style.module.scss";
 export type UserMenuProps = {
   imageUrl: string;
   name: string;
-  userId: string;
+  uid: string;
 };
 
-function UserMenu({ imageUrl, name, userId }: UserMenuProps): JSX.Element {
+function UserMenu({ imageUrl, name, uid }: UserMenuProps): JSX.Element {
   const {
     appinstalled,
     canInstallprompt,
@@ -22,6 +23,7 @@ function UserMenu({ imageUrl, name, userId }: UserMenuProps): JSX.Element {
     showInstallPrompt,
     unregister,
   } = usePwa();
+  const router = useRouter();
   const handleUpdate = useCallback(async () => {
     const result = await unregister();
 
@@ -32,11 +34,11 @@ function UserMenu({ imageUrl, name, userId }: UserMenuProps): JSX.Element {
         title: "りくばん！のアップデート",
       });
 
-      window.location.reload();
+      router.reload();
 
       return;
     }
-  }, [unregister]);
+  }, [router, unregister]);
 
   return (
     <div>
@@ -59,22 +61,33 @@ function UserMenu({ imageUrl, name, userId }: UserMenuProps): JSX.Element {
         transition={true}
       >
         <MenuItem className={styles.menuItem}>
-          <Link href={`/${userId}/articles/new`}>
+          <Link href={`/${uid}/articles/new`}>
             <a>メンバーを募集する</a>
           </Link>
         </MenuItem>
         <MenuItem className={styles.menuItem}>
-          <Link href={`/${userId}/articles`}>
+          <Link href={`/${uid}/articles`}>
             <a>募集中の記事を確認する</a>
           </Link>
         </MenuItem>
+        <SubMenu
+          className={styles.subMenu}
+          label="メッセージを確認する"
+          menuClassName={styles.menu}
+        >
+          <MenuItem className={styles.menuItem}>
+            <Link href={`/${uid}/messages?article=applicant`}>
+              <a>応募中の記事</a>
+            </Link>
+          </MenuItem>
+          <MenuItem className={styles.menuItem}>
+            <Link href={`/${uid}/messages?article=recruiter`}>
+              <a>募集中の記事</a>
+            </Link>
+          </MenuItem>
+        </SubMenu>
         <MenuItem className={styles.menuItem}>
-          <Link href={`/${userId}/messages`}>
-            <a>メッセージを確認する</a>
-          </Link>
-        </MenuItem>
-        <MenuItem className={styles.menuItem}>
-          <Link href={`/${userId}`}>
+          <Link href={`/${uid}`}>
             <a>ユーザー情報を確認する</a>
           </Link>
         </MenuItem>

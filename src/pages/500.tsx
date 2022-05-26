@@ -1,6 +1,6 @@
-import { ReactElement } from "react";
 import Layout from "components/templates/Layout";
 import Seo from "components/templates/Seo";
+import { ReactElement } from "react";
 
 function Custom500(): JSX.Element {
   return (

@@ -1,92 +1,138 @@
-import {
-  ObjectWithObjectID,
-  PartialUpdateObjectResponse,
-} from "@algolia/client-search";
-import algoliasearch from "algoliasearch";
-import apiBase from "middlewares/apiBase";
+import { Entry } from "contentful";
+import { Entry as ManagementEntry } from "contentful-management";
+import getClient from "libs/getClient";
+import getEnvironment from "libs/getEnvironment";
+import getHandler from "libs/getHandler";
+
+const handler = getHandler<
+  | DeleteMessagesMessageIdData
+  | GetMessagesMessageIdData
+  | PutMessagesMessageIdData
+>();
+
+export type DeleteMessagesMessageIdQuery = {
+  messageId: string;
+};
+
+type ExtendedDeleteRequest = {
+  query: DeleteMessagesMessageIdQuery;
+};
+
+export type DeleteMessagesMessageIdData = ManagementEntry;
+
+type ExtendedDeleteResponse = {
+  json: (body: DeleteMessagesMessageIdData) => void;
+};
+
+handler.delete<ExtendedDeleteRequest, ExtendedDeleteResponse>(
+  async ({ query: { messageId } }, res) => {
+    const environment = await getEnvironment();
+
+    if (!environment) {
+      res.status(404);
+      res.end();
+
+      return;
+    }
+
+    const entry = await environment.getEntry(messageId);
+    const unpublishedEntry = await entry.unpublish();
+
+    await unpublishedEntry.delete();
+
+    res.status(200);
+    res.json(unpublishedEntry);
+    res.end();
+  }
+);
 
 export type GetMessagesMessageIdQuery = {
-  attributesToRetrieve?: string | string[];
   messageId: string;
 };
-
-export type GetMessagesMessageIdData = Algolia.Message & ObjectWithObjectID;
-
-type Message = {
-  content: string;
-  date: string;
-  user: "applicant" | "recruiter";
-};
-
-export type PatchMessagesMessageIdBody = {
-  messages: Message[];
-};
-
-export type PatchMessagesMessageIdQuery = {
-  messageId: string;
-};
-
-export type PatchMessagesMessageIdData = PartialUpdateObjectResponse;
-
-const handler = apiBase<PatchMessagesMessageIdBody>();
 
 type ExtendedGetRequest = {
   query: GetMessagesMessageIdQuery;
 };
+
+export type GetMessagesMessageIdData = Entry<Contentful.IMessagesFields>;
 
 type ExtendedGetResponse = {
   json: (body: GetMessagesMessageIdData) => void;
 };
 
 handler.get<ExtendedGetRequest, ExtendedGetResponse>(
-  async ({ query: { attributesToRetrieve, messageId } }, res) => {
-    const client = algoliasearch(
-      process.env.ALGOLIA_APPLICATION_ID || "",
-      process.env.ALGOLIA_ADMIN_API_KEY || ""
-    );
-    const index = client.initIndex(
-      process.env.ALGOLIA_MESSAGES_INDEX_NAME || ""
-    );
-    const messageWithObjectID = await index.getObject<Algolia.Message>(
-      messageId,
-      {
-        attributesToRetrieve: Array.isArray(attributesToRetrieve)
-          ? attributesToRetrieve
-          : [attributesToRetrieve || ""],
-      }
-    );
+  async ({ query: { messageId } }, res) => {
+    const client = getClient();
+
+    if (!client) {
+      res.status(404);
+      res.end();
+
+      return;
+    }
+
+    const entry = await client.getEntry<Contentful.IMessagesFields>(messageId);
 
     res.status(200);
-    res.json(messageWithObjectID);
+    res.json(entry);
     res.end();
   }
 );
 
-type ExtendedPatchRequest = {
-  body: PatchMessagesMessageIdBody;
-  query: PatchMessagesMessageIdQuery;
+export type PutMessagesMessageIdBody = Contentful.IMessagesFields;
+
+export type PutMessagesMessageIdQuery = {
+  messageId: string;
 };
 
-type ExtendedPatchResponse = {
-  json: (body: PatchMessagesMessageIdData) => void;
+type ExtendedPutRequest = {
+  body: PutMessagesMessageIdBody;
+  query: PutMessagesMessageIdQuery;
 };
 
-handler.patch<ExtendedPatchRequest, ExtendedPatchResponse>(
+export type PutMessagesMessageIdData = ManagementEntry;
+
+type ExtendedPutResponse = {
+  json: (body: PutMessagesMessageIdData) => void;
+};
+
+handler.put<ExtendedPutRequest, ExtendedPutResponse>(
   async ({ body, query: { messageId } }, res) => {
-    const { messages } = body as ExtendedPatchRequest["body"];
-    const client = algoliasearch(
-      process.env.ALGOLIA_APPLICATION_ID || "",
-      process.env.ALGOLIA_ADMIN_API_KEY || ""
-    );
-    const index = client.initIndex(
-      process.env.ALGOLIA_MESSAGES_INDEX_NAME || ""
-    );
-    const partialUpdateObjectResponse = await index
-      .partialUpdateObject({ messages, objectID: messageId })
-      .wait();
+    const environment = await getEnvironment();
+
+    if (!environment) {
+      res.status(404);
+      res.end();
+
+      return;
+    }
+
+    const { applicantUid, articleId, messages, unreadUser } =
+      body as ExtendedPutRequest["body"];
+    const entry = await environment.getEntry(messageId, {
+      content_type: "messages" as Contentful.CONTENT_TYPE,
+    });
+
+    entry.fields = {
+      applicantUid: {
+        ja: applicantUid,
+      },
+      articleId: {
+        ja: articleId,
+      },
+      messages: {
+        ja: messages,
+      },
+      unreadUser: {
+        ja: unreadUser,
+      },
+    };
+
+    const updatedEntry = await entry.update();
+    const publishedEntry = await updatedEntry.publish();
 
     res.status(200);
-    res.json(partialUpdateObjectResponse);
+    res.json(publishedEntry);
     res.end();
   }
 );

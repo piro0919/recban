@@ -1,15 +1,17 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FieldError, SubmitHandler, useForm } from "react-hook-form";
-import * as yup from "yup";
-import styles from "./style.module.scss";
 import Button from "components/atoms/Button";
 import HorizontalRule from "components/atoms/HorizontalRule";
 import Input from "components/atoms/Input";
+import MultiselectReactDropdown from "components/atoms/MultiselectReactDropdown";
 import Select from "components/atoms/Select";
 import Textarea from "components/atoms/Textarea";
 import useGenres from "hooks/useGenres";
 import useParts from "hooks/useParts";
 import usePrefectures from "hooks/usePrefectures";
+import { useMemo } from "react";
+import { FieldError, SubmitHandler, useForm } from "react-hook-form";
+import * as yup from "yup";
+import styles from "./style.module.scss";
 
 type FieldValues = {
   ambition: string;
@@ -30,18 +32,27 @@ const schema = yup.object().shape({
   frequency: yup.string().trim().required("活動頻度を入力してください"),
   genres: yup
     .array()
-    .max(3, "ジャンルは3つ以内で選択してください")
-    .min(1, "ジャンルを1つ以上選択してください"),
-  maxAge: yup.string().trim().required("最大年齢を選択してください"),
-  minAge: yup.string().trim().required("最小年齢を選択してください"),
+    .max(3, "ジャンルは 3 つ以内で選択してください")
+    .min(1, "ジャンルを 1 つ以上選択してください"),
+  maxAge: yup
+    .number()
+    .typeError("最大年齢を選択してください")
+    .when("minAge", (minAge: number, schema) => {
+      console.log(typeof minAge);
+
+      return isNaN(minAge)
+        ? schema
+        : schema.min(minAge, "最大年齢は最小年齢以上を選択してください");
+    }),
+  minAge: yup.number().typeError("最小年齢を選択してください"),
   parts: yup
     .array()
-    .max(3, "募集パートは3つ以内で選択してください")
-    .min(1, "募集パートを1つ以上選択してください"),
+    .max(3, "募集パートは 3 つ以内で選択してください")
+    .min(1, "募集パートを 1 つ以上選択してください"),
   places: yup
     .array()
-    .max(3, "活動場所は3つ以内で選択してください")
-    .min(1, "活動場所を1つ以上選択してください"),
+    .max(3, "活動場所は 3 つ以内で選択してください")
+    .min(1, "活動場所を 1 つ以上選択してください"),
   sex: yup.string().trim().required("性別を選択してください"),
   title: yup.string().trim().required("タイトルを入力してください"),
 });
@@ -61,9 +72,10 @@ function ArticleForm({
   const parts = useParts();
   const prefectures = usePrefectures();
   const {
-    formState: { errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
     register,
+    setValue,
   } = useForm<FieldValues>({
     defaultValues: defaultValues || {
       ambition: "",
@@ -79,6 +91,16 @@ function ArticleForm({
     },
     resolver: yupResolver(schema),
   });
+  const prefecturesOptions = useMemo(
+    () =>
+      prefectures.flatMap(({ prefectures, region }) =>
+        prefectures.map((prefecture) => ({
+          prefecture,
+          region,
+        }))
+      ),
+    [prefectures]
+  );
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -115,22 +137,21 @@ function ArticleForm({
             <fieldset className={styles.fieldset}>
               <legend className={styles.legend}>
                 募集パート<abbr className={styles.required}>*</abbr>
-                <span>（3つまで選択可能です）</span>
+                <span>（ 3 つまで選択可能です）</span>
               </legend>
-              <ul className={styles.list}>
-                {parts.map((part) => (
-                  <li key={part}>
-                    <label className={styles.checkboxLabel}>
-                      <input
-                        {...register("parts")}
-                        type="checkbox"
-                        value={part}
-                      />
-                      <span>{part}</span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
+              <MultiselectReactDropdown
+                isObject={false}
+                onRemove={(selected): void => {
+                  setValue("parts", selected);
+                }}
+                onSelect={(selected): void => {
+                  setValue("parts", selected);
+                }}
+                options={parts}
+                placeholder=""
+                selectedValues={defaultValues && defaultValues["parts"]}
+                selectionLimit={3}
+              />
             </fieldset>
             {errors.parts ? (
               <p className={styles.errorMessage}>
@@ -142,22 +163,21 @@ function ArticleForm({
             <fieldset className={styles.fieldset}>
               <legend className={styles.legend}>
                 ジャンル<abbr className={styles.required}>*</abbr>
-                <span>（3つまで選択可能です）</span>
+                <span>（ 3 つまで選択可能です）</span>
               </legend>
-              <ul className={styles.list}>
-                {genres.map((genre) => (
-                  <li key={genre}>
-                    <label className={styles.checkboxLabel}>
-                      <input
-                        {...register("genres")}
-                        type="checkbox"
-                        value={genre}
-                      />
-                      <span>{genre}</span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
+              <MultiselectReactDropdown
+                isObject={false}
+                onRemove={(selected): void => {
+                  setValue("genres", selected);
+                }}
+                onSelect={(selected): void => {
+                  setValue("genres", selected);
+                }}
+                options={genres}
+                placeholder=""
+                selectedValues={defaultValues && defaultValues["genres"]}
+                selectionLimit={3}
+              />
             </fieldset>
             {errors.genres ? (
               <p className={styles.errorMessage}>
@@ -234,22 +254,49 @@ function ArticleForm({
             <fieldset className={styles.fieldset}>
               <legend className={styles.legend}>
                 活動場所<abbr className={styles.required}>*</abbr>
-                <span>（3箇所まで選択可能です）</span>
+                <span>（ 3 箇所まで選択可能です）</span>
               </legend>
-              <ul className={styles.list}>
-                {prefectures.map((prefecture) => (
-                  <li key={prefecture}>
-                    <label className={styles.checkboxLabel}>
-                      <input
-                        {...register("places")}
-                        type="checkbox"
-                        value={prefecture}
-                      />
-                      <span>{prefecture}</span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
+              <MultiselectReactDropdown
+                displayValue="prefecture"
+                groupBy="region"
+                onRemove={(selected): void => {
+                  setValue(
+                    "places",
+                    selected.map(
+                      ({
+                        prefecture,
+                      }: {
+                        prefecture: string;
+                        region: string;
+                      }) => prefecture
+                    )
+                  );
+                }}
+                onSelect={(selected): void => {
+                  setValue(
+                    "places",
+                    selected.map(
+                      ({
+                        prefecture,
+                      }: {
+                        prefecture: string;
+                        region: string;
+                      }) => prefecture
+                    )
+                  );
+                }}
+                options={prefecturesOptions}
+                placeholder=""
+                selectedValues={
+                  defaultValues &&
+                  defaultValues["places"].map((place) =>
+                    prefecturesOptions.find(
+                      ({ prefecture }) => place === prefecture
+                    )
+                  )
+                }
+                selectionLimit={3}
+              />
             </fieldset>
             {errors.places ? (
               <p className={styles.errorMessage}>
@@ -291,7 +338,7 @@ function ArticleForm({
         </div>
         <HorizontalRule />
         <div className={styles.buttonWrapper}>
-          <Button type="submit">
+          <Button disabled={isSubmitting} type="submit">
             {articleId ? "記事を修正する" : "メンバーを募集する"}
           </Button>
         </div>

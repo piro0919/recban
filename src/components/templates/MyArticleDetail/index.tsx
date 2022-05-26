@@ -1,13 +1,13 @@
-import { useRouter } from "next/router";
-import { useCallback } from "react";
-import { TwitterShareButton } from "react-share";
-import styles from "./style.module.scss";
 import Button, { ButtonProps } from "components/atoms/Button";
 import Heading2 from "components/atoms/Heading2";
 import Heading3 from "components/atoms/Heading3";
 import HorizontalRule from "components/atoms/HorizontalRule";
 import Article from "components/molecules/Article";
 import DefinitionList from "components/molecules/DefinitionList";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
+import { TwitterShareButton } from "react-share";
+import styles from "./style.module.scss";
 
 export type MyArticleDetailProps = {
   age: string;
@@ -23,8 +23,8 @@ export type MyArticleDetailProps = {
   sex: string;
   title: string;
   twitterId: string;
+  uid: string;
   untilDate: string;
-  userId: string;
 };
 
 function MyArticleDetail({
@@ -41,23 +41,28 @@ function MyArticleDetail({
   sex,
   title,
   twitterId,
+  uid,
   untilDate,
-  userId,
 }: MyArticleDetailProps): JSX.Element {
   const router = useRouter();
   const handleConfirm = useCallback<NonNullable<ButtonProps["onClick"]>>(() => {
     router.push(`/articles/${articleId}`);
   }, [articleId, router]);
   const handleEdit = useCallback<NonNullable<ButtonProps["onClick"]>>(() => {
-    router.push(`/${userId}/articles/${articleId}/edit`);
-  }, [articleId, router, userId]);
+    router.push(`/${uid}/articles/${articleId}/edit`);
+  }, [articleId, router, uid]);
+  const [origin, setOrigin] = useState("");
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   return (
     <div className={styles.wrapper}>
       <Article
         heading={
           <div className={styles.heading2Wrapper}>
-            <Heading2>{title}</Heading2>
+            <Heading2 text={title} />
           </div>
         }
       >
@@ -127,17 +132,17 @@ function MyArticleDetail({
               <Button onClick={handleConfirm}>記事を確認する</Button>
               <Button onClick={handleEdit}>記事を修正する</Button>
               <Button onClick={onDelete}>記事を削除する</Button>
-              {typeof window === "undefined" ? null : (
+              {origin ? (
                 <TwitterShareButton
                   className={styles.twitterShareButton}
-                  hashtags={["りくばん"]}
+                  hashtags={["りくばん！"]}
                   title={title}
-                  url={`${window.location.origin}/articles/${articleId}`}
+                  url={`${origin}/articles/${articleId}`}
                   via={twitterId}
                 >
                   Twitterでシェアする
                 </TwitterShareButton>
-              )}
+              ) : null}
             </div>
           </div>
         </div>

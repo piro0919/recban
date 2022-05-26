@@ -1,12 +1,11 @@
-@import "styles/breakpoints";
-@import "sass-mq";
-@import url("https://fonts.googleapis.com/css2?family=M+PLUS+2&family=Kaisei+Opti:wght@700&family=Zen+Kaku+Gothic+Antique&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+2&family=Zen+Kaku+Gothic+Antique&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@700&display=swap&text=りくばん！");
 
 html {
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     font-size: 50%;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     font-size: 62.5%;
   }
 }
@@ -26,6 +25,7 @@ body {
 }
 
 a {
+  caret-color: transparent;
   color: inherit;
   text-decoration: none;
 }
@@ -36,4 +36,8 @@ svg {
 
 ul {
   list-style: none;
+}
+
+.iOSPWA-container {
+  font-family: arial, sans-serif;
 }

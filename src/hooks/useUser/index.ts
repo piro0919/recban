@@ -1,49 +1,39 @@
-import { User } from "firebase/auth";
-import { destroyCookie, setCookie } from "nookies";
-import { useEffect, useState } from "react";
 import auth from "libs/auth";
+import { useMemo } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 
-export type UserData = { user?: User };
+export type UserData = {
+  displayName?: string;
+  email?: string;
+  loading: boolean;
+  photoURL?: string;
+  uid?: string;
+};
 
-// _app.ts 以外で import しないこと
-// user は UserContext を介して取得するように
 function useUser(): UserData {
-  const [user, setUser] = useState<User>();
+  const [user, loading] = useAuthState(auth);
+  const { displayName, email, photoURL, uid } = useMemo(() => {
+    if (!user) {
+      return { displayName: undefined, photoURL: undefined, uid: undefined };
+    }
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        const idToken = await user.getIdToken();
-        const { refreshToken } = user;
+    const { displayName, email, photoURL, uid } = user;
 
-        setCookie(null, "idToken", idToken, {
-          maxAge: 30 * 24 * 60 * 60,
-          path: "/",
-          sameSite: "Lax",
-        });
-        setCookie(null, "refreshToken", refreshToken, {
-          maxAge: 30 * 24 * 60 * 60,
-          path: "/",
-          sameSite: "Lax",
-        });
-
-        setUser(user);
-
-        return;
-      }
-
-      destroyCookie(null, "idToken", { path: "/" });
-      destroyCookie(null, "refreshToken", { path: "/" });
-
-      setUser(undefined);
-    });
-
-    return (): void => {
-      unsubscribe();
+    return {
+      uid,
+      displayName: displayName || undefined,
+      email: email || undefined,
+      photoURL: photoURL || undefined,
     };
-  }, []);
+  }, [user]);
 
-  return { user };
+  return {
+    displayName,
+    email,
+    loading,
+    photoURL,
+    uid,
+  };
 }
 
 export default useUser;

@@ -1,17 +1,17 @@
-import { useRouter } from "next/router";
-import { useCallback } from "react";
-import styles from "./style.module.scss";
 import Button, { ButtonProps } from "components/atoms/Button";
 import HorizontalRule from "components/atoms/HorizontalRule";
 import DefinitionList from "components/molecules/DefinitionList";
+import { useRouter } from "next/router";
+import { useCallback } from "react";
+import styles from "./style.module.scss";
 
 export type ProfileTopProps = {
   email: string;
-  enabledContactEmail: string;
+  enabledContactEmail: boolean;
   name: string;
-  notification: string;
+  notification: boolean;
   twitterId: string;
-  userId: string;
+  uid: string;
 };
 
 function ProfileTop({
@@ -20,12 +20,12 @@ function ProfileTop({
   name,
   notification,
   twitterId,
-  userId,
+  uid,
 }: ProfileTopProps): JSX.Element {
   const router = useRouter();
   const handleEdit = useCallback<NonNullable<ButtonProps["onClick"]>>(() => {
-    router.push(`/${userId}/edit`);
-  }, [router, userId]);
+    router.push(`/${uid}/edit`);
+  }, [router, uid]);
 
   return (
     <div className={styles.wrapper}>
@@ -33,23 +33,23 @@ function ProfileTop({
         <DefinitionList
           definitions={[
             {
-              description: name,
+              description: name || "未設定",
               term: "お名前 / ハンドルネーム",
             },
             {
-              description: email,
+              description: email || "未設定",
               term: "メールアドレス",
             },
             {
-              description: twitterId,
+              description: twitterId || "未設定",
               term: "TwitterID",
             },
             {
-              description: enabledContactEmail,
+              description: enabledContactEmail ? "オン" : "オフ",
               term: "メールで連絡可能",
             },
             {
-              description: notification,
+              description: notification ? "オン" : "オフ",
               term: "メール通知",
             },
           ]}

@@ -1,23 +1,20 @@
-@import "styles/breakpoints";
-@import "sass-mq";
-
 .formInner {
   display: grid;
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     gap: 12px;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     gap: 24px;
   }
 }
 
 .fieldsWrapper {
   display: grid;
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     gap: 12px;
     padding: 0 12px;
   }
-  @include mq($from: tablet) {
+  @include mq.mq($from: tablet) {
     gap: 24px;
   }
 }
@@ -69,7 +66,7 @@
 }
 
 .buttonWrapper {
-  @include mq($until: tablet) {
+  @include mq.mq($until: tablet) {
     padding: 0 12px;
   }
 }

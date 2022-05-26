@@ -7,6 +7,7 @@ import {
 import styles from "./style.module.scss";
 
 export type TextareaProps = {
+  maxLength?: number;
   name?: string;
   onBlur?: FocusEventHandler<HTMLTextAreaElement>;
   onChange?: ChangeEventHandler<HTMLTextAreaElement>;
@@ -15,12 +16,13 @@ export type TextareaProps = {
 };
 
 function Textarea(
-  { name, onBlur, onChange, placeholder, value }: TextareaProps,
+  { maxLength, name, onBlur, onChange, placeholder, value }: TextareaProps,
   ref: ForwardedRef<HTMLTextAreaElement>
 ): JSX.Element {
   return (
     <textarea
       className={styles.textarea}
+      maxLength={maxLength}
       name={name}
       onBlur={onBlur}
       onChange={onChange}

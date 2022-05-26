@@ -1,25 +1,26 @@
-import "../styles/globals.scss";
-import "../styles/nprogress.css";
+import "@djthoms/pretty-checkbox/src/pretty-checkbox.scss";
+import NoSSR from "@mpth/react-no-ssr";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
-import "dayjs/locale/ja";
-import "ress";
-import dayjs from "dayjs";
+import IosPwaPrompt from "components/templates/IosPwaPrompt";
+import UserContext from "contexts/UserContext";
+import { getRedirectResult, UserCredential } from "firebase/auth";
+import auth from "libs/auth";
+import fetcher from "libs/fetcher";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
-import NProgress from "nprogress";
-import { ReactElement, ReactNode, useEffect } from "react";
-import SnackbarProvider from "react-simple-snackbar";
-import UserContext from "contexts/UserContext";
-import useUser from "hooks/useUser";
-
-dayjs.locale("ja");
-
-if (process.env.NODE_ENV === "development") {
-  require("../styles/show-breakpoints.scss");
-}
+import NextNProgress from "nextjs-progressbar";
+import { setCookie, destroyCookie } from "nookies";
+import { ReactElement, ReactNode, useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { Toaster } from "react-hot-toast";
+import ScrollToTop from "react-scroll-to-top";
+import "ress";
+import "styles/globals.scss";
+import "styles/mq-settings.scss";
+import "swiper/scss";
+import "swiper/scss/lazy";
+import { SWRConfig } from "swr";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -29,55 +30,82 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-const PWAPrompt = dynamic<ReactIosPwaPrompt.PWAPromptProps>(
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  () => import("react-ios-pwa-prompt"),
-  {
-    ssr: false,
-  }
-);
-
 function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
-  const { user } = useUser();
   const getLayout = Component.getLayout ?? ((page): ReactNode => page);
-  const router = useRouter();
+  const [userCredential, setUserCredential] = useState<UserCredential>();
+  const [user] = useAuthState(auth);
 
   useEffect(() => {
-    const handleStart = (url: string): void => {
-      console.log(`Loading: ${url}`);
+    if (user) {
+      user.getIdToken().then((idToken) => {
+        const { refreshToken } = user;
 
-      NProgress.start();
-    };
-    const handleStop = (): void => {
-      NProgress.done();
-    };
+        setCookie(null, "idToken", idToken, {
+          maxAge: 30 * 24 * 60 * 60,
+          path: "/",
+          sameSite: "Lax",
+        });
+        setCookie(null, "refreshToken", refreshToken, {
+          maxAge: 30 * 24 * 60 * 60,
+          path: "/",
+          sameSite: "Lax",
+        });
+      });
 
-    router.events.on("routeChangeStart", handleStart);
-    router.events.on("routeChangeComplete", handleStop);
-    router.events.on("routeChangeError", handleStop);
+      return;
+    }
 
-    return () => {
-      router.events.off("routeChangeStart", handleStart);
-      router.events.off("routeChangeComplete", handleStop);
-      router.events.off("routeChangeError", handleStop);
-    };
-  }, [router]);
+    destroyCookie(null, "idToken", { path: "/" });
+    destroyCookie(null, "refreshToken", { path: "/" });
+  }, [user]);
+
+  useEffect(() => {
+    getRedirectResult(auth).then((userCredential) => {
+      if (!userCredential) {
+        return;
+      }
+
+      setUserCredential(userCredential);
+    });
+  }, []);
 
   return (
-    <SnackbarProvider>
-      <UserContext.Provider value={{ user }}>
+    <SWRConfig
+      value={{
+        fetcher,
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnMount: true,
+        revalidateOnReconnect: false,
+      }}
+    >
+      <UserContext.Provider value={{ userCredential }}>
         {getLayout(<Component {...pageProps} />)}
-        <PWAPrompt
-          copyAddHomeButtonLabel="2) 「ホーム画面に追加」をタップします。"
-          copyBody="このウェブサイトにはアプリ機能があります。ホーム画面に追加してフルスクリーンおよびオフラインで使用できます。"
-          copyClosePrompt="キャンセル"
-          copyShareButtonLabel="1) （四角から矢印が飛び出したマーク）をタップします。"
-          copyTitle="ホーム画面に追加"
-          debug={process.env.NODE_ENV === "development"}
+        <NextNProgress />
+        <IosPwaPrompt />
+        <NoSSR>
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: "#2d2e30",
+                color: "#e8eaed",
+                maxWidth: 400,
+              },
+            }}
+          />
+        </NoSSR>
+        <ScrollToTop
+          color="#e8eaed"
+          style={{
+            background: "#2d2e30",
+            boxShadow: "none",
+          }}
+          width="20"
         />
       </UserContext.Provider>
-    </SnackbarProvider>
+    </SWRConfig>
   );
 }
 
