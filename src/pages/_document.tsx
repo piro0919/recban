@@ -22,7 +22,7 @@ class MyDocument extends Document {
         <Head>
           <link href="https://fonts.googleapis.com" rel="preconnect" />
           <link
-            crossOrigin="crossOrigin"
+            crossOrigin="true"
             href="https://fonts.gstatic.com"
             rel="preconnect"
           />

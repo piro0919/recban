@@ -3,6 +3,7 @@ const path = require("path");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = withPWA({
+  optimizeFonts: false,
   pwa: {
     dest: "public",
     disable: process.env.NODE_ENV === "development",
