@@ -2,7 +2,6 @@ import "@djthoms/pretty-checkbox/src/pretty-checkbox.scss";
 import NoSSR from "@mpth/react-no-ssr";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
-import IosPwaPrompt from "components/templates/IosPwaPrompt";
 import UserContext from "contexts/UserContext";
 import { getRedirectResult, UserCredential } from "firebase/auth";
 import auth from "libs/auth";
@@ -92,7 +91,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
         <UserContext.Provider value={{ userCredential }}>
           {getLayout(<Component {...pageProps} />)}
           <NextNProgress />
-          <IosPwaPrompt />
           <NoSSR>
             <Toaster
               position="bottom-center"
