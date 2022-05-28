@@ -44,8 +44,6 @@ function UserMenu({ imageUrl, name, uid }: UserMenuProps): JSX.Element {
     router.reload();
   }, [router, unregister]);
 
-  console.log(appinstalled, canInstallprompt, enabledPwa, isPwa);
-
   return (
     <div>
       <Menu
