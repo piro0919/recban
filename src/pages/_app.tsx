@@ -110,6 +110,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
             style={{
               background: "#2d2e30",
               boxShadow: "none",
+              opacity: 0.75,
             }}
             width="20"
           />

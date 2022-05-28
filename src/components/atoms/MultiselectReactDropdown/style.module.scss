@@ -18,6 +18,7 @@
 .multiselect :global(.searchBox) {
   color: #fff;
   margin: 0;
+  width: 100%;
 }
 
 .multiselect :global(.optionListContainer) {
@@ -41,4 +42,9 @@
   @include mq.mq($from: tablet) {
     height: 30px;
   }
+}
+
+.multiselect :global(.groupHeading) {
+  font-size: 1.2rem;
+  padding: 5px 10px;
 }

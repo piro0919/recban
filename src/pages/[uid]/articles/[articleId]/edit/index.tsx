@@ -38,11 +38,7 @@ function Edit({ articleId, defaultValues, uid }: EditProps): JSX.Element {
       sex,
       title,
     }) => {
-      const {
-        data: {
-          sys: { id },
-        },
-      } = await axios.put<
+      const myPromise = axios.put<
         PutArticlesArticleIdData,
         AxiosResponse<PutArticlesArticleIdData>,
         PutArticlesArticleIdBody
@@ -59,8 +55,15 @@ function Edit({ articleId, defaultValues, uid }: EditProps): JSX.Element {
         maxAge: parseInt(maxAge, 10),
         minAge: parseInt(minAge, 10),
       });
-
-      toast.success("記事を修正しました！");
+      const {
+        data: {
+          sys: { id },
+        },
+      } = await toast.promise(myPromise, {
+        error: "記事の修正に失敗しました…",
+        loading: "記事を修正中です…",
+        success: "記事を修正しました！",
+      });
 
       router.push(`/${uid}/articles/${id}`);
     },

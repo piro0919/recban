@@ -27,6 +27,10 @@ function Input(
       onChange={onChange}
       placeholder={placeholder}
       ref={ref}
+      style={{
+        minWidth:
+          placeholder && `calc(${placeholder.length} * (1.4rem + 1px) + 28px)`,
+      }}
       type={type}
       value={value}
     />

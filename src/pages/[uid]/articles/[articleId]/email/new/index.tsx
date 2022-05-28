@@ -38,7 +38,7 @@ function New({
         return;
       }
 
-      await axios.post<
+      const myPromise = axios.post<
         PostEmailData,
         AxiosResponse<PostEmailData>,
         PostEmailBody
@@ -49,7 +49,11 @@ function New({
         text: `${text}\n\n${window.location.origin}/${collocutorUid}/articles/${articleId}`,
       });
 
-      toast.success("メールを送信しました！");
+      await toast.promise(myPromise, {
+        error: "メールの送信に失敗しました…",
+        loading: "メールを送信中です…",
+        success: "メールを送信しました！",
+      });
 
       router.push(`/articles/${articleId}`);
     },

@@ -37,9 +37,16 @@
   height: 100%;
   justify-content: center;
   max-width: 1280px;
-  padding: 0 24px;
   position: relative;
   width: 100%;
+  @include mq.mq($until: tablet) {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  @include mq.mq($from: tablet) {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
 }
 
 .messageWindow::before {
@@ -65,7 +72,11 @@
 
 .message {
   color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   text-align: center;
+  white-space: nowrap;
   @include mq.mq($until: tablet) {
     font-size: 2.4rem;
   }

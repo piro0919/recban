@@ -51,12 +51,13 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
             <Controller
               control={control}
               name="part"
-              render={({ field: { name, value } }): JSX.Element => (
+              render={({ field: { name, ref, value } }): JSX.Element => (
                 <Select
                   onChange={({ value }): void => {
                     setValue(name, value);
                   }}
                   options={["", ...parts]}
+                  ref={ref}
                   value={value}
                 />
               )}
@@ -67,12 +68,13 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
             <Controller
               control={control}
               name="genre"
-              render={({ field: { name, value } }): JSX.Element => (
+              render={({ field: { name, ref, value } }): JSX.Element => (
                 <Select
                   onChange={({ value }): void => {
                     setValue(name, value);
                   }}
                   options={["", ...genres]}
+                  ref={ref}
                   value={value}
                 />
               )}
@@ -83,12 +85,13 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
             <Controller
               control={control}
               name="sex"
-              render={({ field: { name, value } }): JSX.Element => (
+              render={({ field: { name, ref, value } }): JSX.Element => (
                 <Select
                   onChange={({ value }): void => {
                     setValue(name, value);
                   }}
                   options={["", "男女問わない", "男性のみ", "女性のみ"]}
+                  ref={ref}
                   value={value}
                 />
               )}
@@ -100,7 +103,7 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
               <Controller
                 control={control}
                 name="age"
-                render={({ field: { name, value } }): JSX.Element => (
+                render={({ field: { name, ref, value } }): JSX.Element => (
                   <Select
                     onChange={({ value }): void => {
                       setValue(name, value);
@@ -111,6 +114,7 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
                         .fill(undefined)
                         .map((_, index) => (index + 12).toString()),
                     ]}
+                    ref={ref}
                     value={value}
                   />
                 )}
@@ -123,7 +127,7 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
             <Controller
               control={control}
               name="place"
-              render={({ field: { name, value } }): JSX.Element => (
+              render={({ field: { name, ref, value } }): JSX.Element => (
                 <Select
                   onChange={({ value }): void => {
                     setValue(name, value);
@@ -132,6 +136,7 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
                     "",
                     ...prefectures.flatMap(({ prefectures }) => prefectures),
                   ]}
+                  ref={ref}
                   value={value}
                 />
               )}
@@ -142,7 +147,7 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
             <Controller
               control={control}
               name="ambition"
-              render={({ field: { name, value } }): JSX.Element => (
+              render={({ field: { name, ref, value } }): JSX.Element => (
                 <Select
                   onChange={({ value }): void => {
                     setValue(name, value);
@@ -154,6 +159,7 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
                     "ややプロ志向",
                     "プロ志向",
                   ]}
+                  ref={ref}
                   value={value}
                 />
               )}

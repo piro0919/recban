@@ -39,11 +39,7 @@ function New({ total, uid }: NewProps): JSX.Element {
         return;
       }
 
-      const {
-        data: {
-          sys: { id },
-        },
-      } = await axios.post<
+      const myPromise = axios.post<
         PostArticlesData,
         AxiosResponse<PostArticlesData>,
         PostArticlesBody
@@ -60,8 +56,15 @@ function New({ total, uid }: NewProps): JSX.Element {
         minAge: parseInt(minAge, 10),
         uid: uid,
       });
-
-      toast.success("メンバーの募集を開始しました！");
+      const {
+        data: {
+          sys: { id },
+        },
+      } = await toast.promise(myPromise, {
+        error: "メンバーの募集開始に失敗しました…",
+        loading: "メンバーの募集を開始中です…",
+        success: "メンバーの募集を開始しました！",
+      });
 
       router.push(`/${uid}/articles/${id}`);
     },

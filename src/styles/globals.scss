@@ -1,6 +1,6 @@
 html {
   @include mq.mq($until: tablet) {
-    font-size: 50%;
+    font-size: 56.25%;
   }
   @include mq.mq($from: tablet) {
     font-size: 62.5%;
@@ -25,6 +25,11 @@ a {
   caret-color: transparent;
   color: inherit;
   text-decoration: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9f9fa0;
 }
 
 svg {

@@ -113,7 +113,7 @@ function ArticleForm({
       <div className={styles.formInner}>
         <div className={styles.fieldsWrapper}>
           <div>
-            <label className={styles.label}>
+            <label className={`${styles.label} ${styles.inputLabel}`}>
               <span>
                 タイトル<abbr className={styles.required}>*</abbr>
               </span>
@@ -135,6 +135,10 @@ function ArticleForm({
                 <Textarea
                   {...register("content")}
                   placeholder="募集内容を入力してください"
+                  style={{
+                    minHeight: "inherit",
+                    resize: "vertical",
+                  }}
                 />
               </div>
             </label>
@@ -151,18 +155,25 @@ function ArticleForm({
                 募集パート<abbr className={styles.required}>*</abbr>
                 <span>（ 3 つまで選択可能です）</span>
               </legend>
-              <MultiselectReactDropdown
-                isObject={false}
-                onRemove={(selected): void => {
-                  setValue("parts", selected);
-                }}
-                onSelect={(selected): void => {
-                  setValue("parts", selected);
-                }}
-                options={parts}
-                placeholder="募集パートを選択または入力してください"
-                selectedValues={defaultValues && defaultValues["parts"]}
-                selectionLimit={3}
+              <Controller
+                control={control}
+                name="parts"
+                render={({ field: { name, ref, value } }): JSX.Element => (
+                  <MultiselectReactDropdown
+                    isObject={false}
+                    onRemove={(selected): void => {
+                      setValue(name, selected);
+                    }}
+                    onSelect={(selected): void => {
+                      setValue(name, selected);
+                    }}
+                    options={parts}
+                    placeholder="募集パートを選択または入力してください"
+                    ref={ref}
+                    selectedValues={value}
+                    selectionLimit={3}
+                  />
+                )}
               />
             </fieldset>
             {errors.parts ? (
@@ -177,18 +188,25 @@ function ArticleForm({
                 ジャンル<abbr className={styles.required}>*</abbr>
                 <span>（ 3 つまで選択可能です）</span>
               </legend>
-              <MultiselectReactDropdown
-                isObject={false}
-                onRemove={(selected): void => {
-                  setValue("genres", selected);
-                }}
-                onSelect={(selected): void => {
-                  setValue("genres", selected);
-                }}
-                options={genres}
-                placeholder="ジャンルを選択または入力してください"
-                selectedValues={defaultValues && defaultValues["genres"]}
-                selectionLimit={3}
+              <Controller
+                control={control}
+                name="genres"
+                render={({ field: { name, ref, value } }): JSX.Element => (
+                  <MultiselectReactDropdown
+                    isObject={false}
+                    onRemove={(selected): void => {
+                      setValue(name, selected);
+                    }}
+                    onSelect={(selected): void => {
+                      setValue(name, selected);
+                    }}
+                    options={genres}
+                    placeholder="ジャンルを選択または入力してください"
+                    ref={ref}
+                    selectedValues={value}
+                    selectionLimit={3}
+                  />
+                )}
               />
             </fieldset>
             {errors.genres ? (
@@ -205,13 +223,14 @@ function ArticleForm({
               <Controller
                 control={control}
                 name="sex"
-                render={({ field: { name, value } }): JSX.Element => (
+                render={({ field: { name, ref, value } }): JSX.Element => (
                   <Select
                     onChange={({ value }): void => {
                       setValue(name, value);
                     }}
                     options={["", "男女問わない", "男性のみ", "女性のみ"]}
                     placeholder="性別を選択してください"
+                    ref={ref}
                     value={value}
                   />
                 )}
@@ -231,7 +250,7 @@ function ArticleForm({
                   <Controller
                     control={control}
                     name="minAge"
-                    render={({ field: { name, value } }): JSX.Element => (
+                    render={({ field: { name, ref, value } }): JSX.Element => (
                       <Select
                         onChange={({ value }): void => {
                           setValue(name, value);
@@ -242,6 +261,7 @@ function ArticleForm({
                             .fill(undefined)
                             .map((_, index) => (index + 12).toString()),
                         ]}
+                        ref={ref}
                         value={value}
                       />
                     )}
@@ -253,7 +273,7 @@ function ArticleForm({
                   <Controller
                     control={control}
                     name="maxAge"
-                    render={({ field: { name, value } }): JSX.Element => (
+                    render={({ field: { name, ref, value } }): JSX.Element => (
                       <Select
                         onChange={({ value }): void => {
                           setValue(name, value);
@@ -264,6 +284,7 @@ function ArticleForm({
                             .fill(undefined)
                             .map((_, index) => (index + 12).toString()),
                         ]}
+                        ref={ref}
                         value={value}
                       />
                     )}
@@ -285,46 +306,50 @@ function ArticleForm({
                 活動場所<abbr className={styles.required}>*</abbr>
                 <span>（ 3 箇所まで選択可能です）</span>
               </legend>
-              <MultiselectReactDropdown
-                displayValue="prefecture"
-                groupBy="region"
-                onRemove={(selected): void => {
-                  setValue(
-                    "places",
-                    selected.map(
-                      ({
-                        prefecture,
-                      }: {
-                        prefecture: string;
-                        region: string;
-                      }) => prefecture
-                    )
-                  );
-                }}
-                onSelect={(selected): void => {
-                  setValue(
-                    "places",
-                    selected.map(
-                      ({
-                        prefecture,
-                      }: {
-                        prefecture: string;
-                        region: string;
-                      }) => prefecture
-                    )
-                  );
-                }}
-                options={prefecturesOptions}
-                placeholder="活動場所を選択または入力してください"
-                selectedValues={
-                  defaultValues &&
-                  defaultValues["places"].map((place) =>
-                    prefecturesOptions.find(
-                      ({ prefecture }) => place === prefecture
-                    )
-                  )
-                }
-                selectionLimit={3}
+              <Controller
+                control={control}
+                name="places"
+                render={({ field: { name, ref, value } }): JSX.Element => (
+                  <MultiselectReactDropdown
+                    displayValue="prefecture"
+                    groupBy="region"
+                    onRemove={(selected): void => {
+                      setValue(
+                        name,
+                        selected.map(
+                          ({
+                            prefecture,
+                          }: {
+                            prefecture: string;
+                            region: string;
+                          }) => prefecture
+                        )
+                      );
+                    }}
+                    onSelect={(selected): void => {
+                      setValue(
+                        name,
+                        selected.map(
+                          ({
+                            prefecture,
+                          }: {
+                            prefecture: string;
+                            region: string;
+                          }) => prefecture
+                        )
+                      );
+                    }}
+                    options={prefecturesOptions}
+                    placeholder="活動場所を選択または入力してください"
+                    ref={ref}
+                    selectedValues={value.map((place) =>
+                      prefecturesOptions.find(
+                        ({ prefecture }) => place === prefecture
+                      )
+                    )}
+                    selectionLimit={3}
+                  />
+                )}
               />
             </fieldset>
             {errors.places ? (
@@ -334,7 +359,7 @@ function ArticleForm({
             ) : null}
           </div>
           <div>
-            <label className={styles.label}>
+            <label className={`${styles.label} ${styles.inputLabel}`}>
               <span>
                 活動頻度<abbr className={styles.required}>*</abbr>
               </span>
@@ -355,8 +380,9 @@ function ArticleForm({
               <Controller
                 control={control}
                 name="ambition"
-                render={({ field: { name, value } }): JSX.Element => (
+                render={({ field: { name, ref, value } }): JSX.Element => (
                   <Select
+                    isDisplayAbove={true}
                     onChange={({ value }): void => {
                       setValue(name, value);
                     }}
@@ -368,6 +394,7 @@ function ArticleForm({
                       "プロ志向",
                     ]}
                     placeholder="志向性を選択してください"
+                    ref={ref}
                     value={value}
                   />
                 )}

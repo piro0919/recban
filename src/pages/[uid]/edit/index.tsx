@@ -20,7 +20,7 @@ function Edit({ defaultValues, uid }: EditProps): JSX.Element {
   const router = useRouter();
   const handleSubmit = useCallback<ProfileEditProps["onSubmit"]>(
     async ({ email, enabledContactEmail, name, notification, twitterId }) => {
-      await axios.put<
+      const myPromise = axios.put<
         PutUsersUidData,
         AxiosResponse<PutUsersUidData>,
         PutUsersUidBody
@@ -32,7 +32,11 @@ function Edit({ defaultValues, uid }: EditProps): JSX.Element {
         twitterId,
       });
 
-      toast.success("ユーザー情報を修正しました！");
+      await toast.promise(myPromise, {
+        error: "ユーザー情報の修正に失敗しました…",
+        loading: "ユーザー情報を修正中です…",
+        success: "ユーザー情報を修正しました！",
+      });
 
       router.push(`/${uid}`);
     },

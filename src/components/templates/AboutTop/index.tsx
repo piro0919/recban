@@ -195,21 +195,19 @@ function AboutTop(): JSX.Element {
           }
         >
           <div className={styles.inner2}>
-            <p>
-              <ul className={styles.list}>
-                <li>
-                  <a
-                    className={styles.anchor}
-                    href="https://twitter.com/708_nhh"
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    7:08 さん
-                  </a>
-                  （キャラクターイラストの作成）
-                </li>
-              </ul>
-            </p>
+            <ul className={styles.list}>
+              <li>
+                <a
+                  className={styles.anchor}
+                  href="https://twitter.com/708_nhh"
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  7:08 さん
+                </a>
+                （キャラクターイラストの作成）
+              </li>
+            </ul>
           </div>
         </Article>
       </div>

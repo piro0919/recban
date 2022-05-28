@@ -17,7 +17,7 @@ export type ReportProps = {
 function Report({ name, uid }: ReportProps): JSX.Element {
   const handleSubmit = useCallback<MyEmailNewProps["onSubmit"]>(
     async ({ subject, text }) => {
-      await axios.post<
+      const myPromise = axios.post<
         PostEmailData,
         AxiosResponse<PostEmailData>,
         PostEmailBody
@@ -27,7 +27,11 @@ function Report({ name, uid }: ReportProps): JSX.Element {
         subject: `（${name} さん）${subject}`,
       });
 
-      toast.success("メールを送信しました！");
+      await toast.promise(myPromise, {
+        error: "メールの送信に失敗しました…",
+        loading: "メールを送信中です…",
+        success: "メールを送信しました！",
+      });
     },
     [name, uid]
   );

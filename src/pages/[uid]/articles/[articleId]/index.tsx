@@ -65,12 +65,12 @@ function ArticleId({
     const result = await swal({
       buttons: ["キャンセル", "OK"],
       icon: "warning",
-      text: "募集中の記事を削除すると、\n紐づくメッセージもすべて削除されます\n本当に記事を削除しますか？",
-      title: "記事の削除",
+      text: "募集を終了すると、\n記事と記事に紐づくメッセージもすべて削除されます\n本当に募集を終了しますか？",
+      title: "募集の終了",
     });
 
     if (!result) {
-      toast("記事の削除をキャンセルしました");
+      toast("募集の終了をキャンセルしました");
 
       return;
     }
@@ -102,7 +102,7 @@ function ArticleId({
       >(`/api/messages/${id}`);
     });
 
-    toast.success("記事を削除しました");
+    toast.success("募集を終了しました！");
 
     router.push(`/${uid}/articles`);
   }, [articleId, onIsDeleting, router, uid]);

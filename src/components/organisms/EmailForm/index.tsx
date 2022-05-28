@@ -21,7 +21,7 @@ function EmailForm({
   onSubmit,
 }: EmailFormProps): JSX.Element {
   const {
-    formState: { isSubmitSuccessful, isSubmitting },
+    formState: { isDirty, isSubmitSuccessful, isSubmitting },
     handleSubmit,
     register,
     reset,
@@ -55,7 +55,7 @@ function EmailForm({
           />
         </div>
         <div className={styles.buttonWrapper}>
-          <Button disabled={disabled || isSubmitting} type="submit">
+          <Button disabled={disabled || !isDirty || isSubmitting} type="submit">
             送信する
           </Button>
         </div>

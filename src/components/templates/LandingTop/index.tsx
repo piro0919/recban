@@ -73,7 +73,8 @@ function LastSlideChildren({
       <div className={styles.messageWindowWrapper}>
         <div className={styles.messageWindow}>
           <p className={styles.message}>
-            それでは！さっそく「りくばん！」を使ってみよう！
+            <span>それでは！さっそく</span>
+            <span>「りくばん！」を使ってみよう！</span>
           </p>
         </div>
       </div>
@@ -118,7 +119,8 @@ function LandingTop({ totalNumberOfArticles }: LandingTopProps): JSX.Element {
         <div className={styles.messageWindowWrapper}>
           <div className={styles.messageWindow}>
             <p className={styles.message}>
-              「りくばん！」を使って最高のバンドメンバーと出会おう！
+              <span>「りくばん！」を使って</span>
+              <span>最高のバンドメンバーと出会おう！</span>
             </p>
           </div>
         </div>
@@ -146,7 +148,8 @@ function LandingTop({ totalNumberOfArticles }: LandingTopProps): JSX.Element {
         <div className={styles.messageWindowWrapper}>
           <div className={styles.messageWindow}>
             <p className={styles.message}>
-              「りくばん！」ではバンドメンバーの募集と応募ができます！
+              <span>「りくばん！」ではバンドメンバーの</span>
+              <span>募集と応募ができます！</span>
             </p>
           </div>
         </div>
@@ -174,7 +177,8 @@ function LandingTop({ totalNumberOfArticles }: LandingTopProps): JSX.Element {
         <div className={styles.messageWindowWrapper}>
           <div className={styles.messageWindow}>
             <p className={styles.message}>
-              「りくばん！」の利用は完全に無料！誰でも簡単に使えるよ！
+              <span>{`現在 ${totalNumberOfArticles} 件の記事が`}</span>
+              <span>バンドメンバーを募集しているよ！</span>
             </p>
           </div>
         </div>
@@ -202,7 +206,8 @@ function LandingTop({ totalNumberOfArticles }: LandingTopProps): JSX.Element {
         <div className={styles.messageWindowWrapper}>
           <div className={styles.messageWindow}>
             <p className={styles.message}>
-              「りくばん！」には広告の表示もありません！
+              <span>「りくばん！」の利用は完全に無料！</span>
+              <span>誰でも簡単に使えるよ！</span>
             </p>
           </div>
         </div>
@@ -230,7 +235,8 @@ function LandingTop({ totalNumberOfArticles }: LandingTopProps): JSX.Element {
         <div className={styles.messageWindowWrapper}>
           <div className={styles.messageWindow}>
             <p className={styles.message}>
-              {`現在 ${totalNumberOfArticles} 件の記事がバンドメンバーを募集しているよ！`}
+              <span>「りくばん！」には</span>
+              <span>広告の表示もありません！</span>
             </p>
           </div>
         </div>

@@ -131,7 +131,7 @@ function MyArticleDetail({
             <div className={styles.buttonsWrapper}>
               <Button onClick={handleConfirm}>記事を確認する</Button>
               <Button onClick={handleEdit}>記事を修正する</Button>
-              <Button onClick={onDelete}>記事を削除する</Button>
+              <Button onClick={onDelete}>募集を終了する</Button>
               {origin ? (
                 <TwitterShareButton
                   className={styles.twitterShareButton}

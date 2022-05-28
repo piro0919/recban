@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { useCallback, useRef, useState } from "react";
+import { ForwardedRef, forwardRef, useCallback, useRef, useState } from "react";
 import Dropdown, { ReactDropdownProps } from "react-dropdown";
 import { useOnClickOutside } from "usehooks-ts";
 import styles from "./style.module.scss";
@@ -7,25 +7,25 @@ import styles from "./style.module.scss";
 export type SelectProps = Pick<
   ReactDropdownProps,
   "onChange" | "options" | "placeholder" | "value"
->;
+> & {
+  isDisplayAbove?: boolean;
+};
 
-function Select({
-  onChange,
-  options,
-  placeholder = "",
-  value,
-}: SelectProps): JSX.Element {
+function Select(
+  { isDisplayAbove, onChange, options, placeholder = "", value }: SelectProps,
+  ref: ForwardedRef<Dropdown>
+): JSX.Element {
   const [key, setKey] = useState("");
-  const ref = useRef(null);
+  const wrapperRef = useRef(null);
   const handleClickOutside = useCallback(() => {
     setKey(dayjs().format());
   }, []);
 
-  useOnClickOutside(ref, handleClickOutside);
+  useOnClickOutside(wrapperRef, handleClickOutside);
 
   return (
     <span
-      ref={ref}
+      ref={wrapperRef}
       style={{
         minWidth: `calc(${Math.max(
           ...[...options, placeholder].map(
@@ -38,15 +38,16 @@ function Select({
         arrowClassName={styles.arrow}
         controlClassName={styles.control}
         key={key}
-        menuClassName={styles.menu}
+        menuClassName={`${styles.menu} ${isDisplayAbove ? styles.above : ""}`}
         onChange={onChange}
         options={options}
         placeholder={placeholder}
         placeholderClassName={styles.placeholder}
+        ref={ref}
         value={value}
       />
     </span>
   );
 }
 
-export default Select;
+export default forwardRef<Dropdown, SelectProps>(Select);

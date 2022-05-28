@@ -31,6 +31,11 @@
   justify-items: flex-start;
 }
 
+.inputLabel {
+  justify-items: legacy;
+  width: 240px;
+}
+
 .required {
   padding: 0 0 0 4px;
 }

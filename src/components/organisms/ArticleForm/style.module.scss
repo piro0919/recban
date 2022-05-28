@@ -21,7 +21,7 @@
 
 .contentTextareaWrapper {
   display: grid;
-  height: 160px;
+  min-height: 160px;
   width: 100%;
 }
 
@@ -41,6 +41,10 @@
   display: grid;
   gap: 8px;
   justify-items: flex-start;
+}
+
+.inputLabel {
+  justify-items: legacy;
 }
 
 .list {

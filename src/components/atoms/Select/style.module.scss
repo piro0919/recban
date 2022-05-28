@@ -24,6 +24,12 @@
   margin: 1px 0 0;
 }
 
+.above {
+  bottom: 100%;
+  margin: 0 0 1px;
+  top: auto;
+}
+
 .placeholder:not(:global(.is-selected)) {
   color: #9f9fa0;
 }

@@ -27,7 +27,7 @@ function New({ uid }: NewProps): JSX.Element {
   const router = useRouter();
   const handleSubmit = useCallback<ProfileNewProps["onSubmit"]>(
     async ({ email, enabledContactEmail, name, notification, twitterId }) => {
-      await axios.post<
+      const myPromise = axios.post<
         PostUsersUidData,
         AxiosResponse<PostUsersUidData>,
         PostUsersUidBody
@@ -39,7 +39,11 @@ function New({ uid }: NewProps): JSX.Element {
         twitterId,
       });
 
-      toast.success("アカウントを作成しました！");
+      await toast.promise(myPromise, {
+        error: "アカウントの作成に失敗しました…",
+        loading: "アカウントを作成中です…",
+        success: "アカウントを作成しました！",
+      });
 
       router.push("/");
     },

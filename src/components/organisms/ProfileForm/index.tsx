@@ -77,7 +77,7 @@ function ProfileForm({
       <div className={styles.formInner}>
         <div className={styles.fieldsWrapper}>
           <div className={styles.fieldWrapper2}>
-            <label className={styles.label}>
+            <label className={`${styles.label} ${styles.inputLabel}`}>
               <span>
                 お名前 / ハンドルネーム
                 <abbr className={styles.required}>*</abbr>
@@ -87,13 +87,13 @@ function ProfileForm({
             <p className={styles.error}>{errors.name?.message}</p>
           </div>
           <div className={styles.fieldWrapper2}>
-            <label className={styles.label}>
+            <label className={`${styles.label} ${styles.inputLabel}`}>
               <span>メールアドレス</span>
               <Input {...register("email")} type="email" />
             </label>
             <p className={styles.error}>{errors.email?.message}</p>
           </div>
-          <label className={styles.label}>
+          <label className={`${styles.label} ${styles.inputLabel}`}>
             <span>TwitterID</span>
             <Input {...register("twitterId")} />
           </label>

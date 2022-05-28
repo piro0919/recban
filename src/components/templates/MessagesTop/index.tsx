@@ -86,10 +86,22 @@ function MessagesTop({
         </Tab>
       </TabList>
       <TabPanel>
-        <ul>{applicantMessageItems}</ul>
+        {applicantMessageItems.length ? (
+          <ul>{applicantMessageItems}</ul>
+        ) : (
+          <p className={styles.noMessage}>
+            現在応募中の記事に紐づくメッセージはありません。
+          </p>
+        )}
       </TabPanel>
       <TabPanel>
-        <ul>{recruiterMessageItems}</ul>
+        {recruiterMessageItems.length ? (
+          <ul>{recruiterMessageItems}</ul>
+        ) : (
+          <p className={styles.noMessage}>
+            現在募集中の記事に紐づくメッセージはありません。
+          </p>
+        )}
       </TabPanel>
     </Tabs>
   );
