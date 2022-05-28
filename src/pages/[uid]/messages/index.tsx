@@ -67,45 +67,47 @@ export const getServerSideProps: GetServerSideProps<
       })
       .then(async ({ items }) => ({
         applicantMessages: await Promise.all(
-          items.map(
-            async ({
-              fields: { articleId, messages, unreadUser },
-              sys: { id },
-            }) => {
-              const [date, user, ...contents] =
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                messages![messages!.length - 1].split(",");
+          items
+            .filter(({ fields: { messages } }) => messages)
+            .map(
+              async ({
+                fields: { articleId, messages, unreadUser },
+                sys: { id },
+              }) => {
+                const [date, user, ...contents] =
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  messages![messages!.length - 1].split(",");
 
-              let name = "";
+                let name = "";
 
-              if (user === "applicant") {
-                name = "あなた";
-              } else {
-                const {
-                  fields: { uid },
-                } = await client.getEntry<Contentful.IArticlesFields>(
-                  articleId
-                );
-                const docRef = doc(collectionRef, uid);
-                const snapshot = await getDoc(docRef);
+                if (user === "applicant") {
+                  name = "あなた";
+                } else {
+                  const {
+                    fields: { uid },
+                  } = await client.getEntry<Contentful.IArticlesFields>(
+                    articleId
+                  );
+                  const docRef = doc(collectionRef, uid);
+                  const snapshot = await getDoc(docRef);
 
-                if (snapshot.exists()) {
-                  const { name: applicantName } =
-                    snapshot.data() as Firestore.User;
+                  if (snapshot.exists()) {
+                    const { name: applicantName } =
+                      snapshot.data() as Firestore.User;
 
-                  name = applicantName;
+                    name = applicantName;
+                  }
                 }
-              }
 
-              return {
-                date,
-                id,
-                name,
-                content: contents.join(","),
-                isNew: unreadUser === "applicant",
-              };
-            }
-          )
+                return {
+                  date,
+                  id,
+                  name,
+                  content: contents.join(","),
+                  isNew: unreadUser === "applicant",
+                };
+              }
+            )
         ),
       })),
     // 応募中の記事一覧の取得 end
@@ -128,40 +130,42 @@ export const getServerSideProps: GetServerSideProps<
                 .then(
                   async ({ items }) =>
                     await Promise.all(
-                      items.map(
-                        async ({
-                          fields: { applicantUid, messages, unreadUser },
-                          sys: { id },
-                        }) => {
-                          const [date, user, ...contents] =
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                            messages![messages!.length - 1].split(",");
+                      items
+                        .filter(({ fields: { messages } }) => messages)
+                        .map(
+                          async ({
+                            fields: { applicantUid, messages, unreadUser },
+                            sys: { id },
+                          }) => {
+                            const [date, user, ...contents] =
+                              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                              messages![messages!.length - 1].split(",");
 
-                          let name = "";
+                            let name = "";
 
-                          if (user === "recruiter") {
-                            name = "あなた";
-                          } else {
-                            const docRef = doc(collectionRef, applicantUid);
-                            const snapshot = await getDoc(docRef);
+                            if (user === "recruiter") {
+                              name = "あなた";
+                            } else {
+                              const docRef = doc(collectionRef, applicantUid);
+                              const snapshot = await getDoc(docRef);
 
-                            if (snapshot.exists()) {
-                              const { name: applicantName } =
-                                snapshot.data() as Firestore.User;
+                              if (snapshot.exists()) {
+                                const { name: applicantName } =
+                                  snapshot.data() as Firestore.User;
 
-                              name = applicantName;
+                                name = applicantName;
+                              }
                             }
-                          }
 
-                          return {
-                            date,
-                            id,
-                            name,
-                            content: contents.join(","),
-                            isNew: unreadUser === "recruiter",
-                          };
-                        }
-                      )
+                            return {
+                              date,
+                              id,
+                              name,
+                              content: contents.join(","),
+                              isNew: unreadUser === "recruiter",
+                            };
+                          }
+                        )
                     )
                 )
             )
