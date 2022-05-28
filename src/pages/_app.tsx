@@ -2,6 +2,7 @@ import "@djthoms/pretty-checkbox/src/pretty-checkbox.scss";
 import NoSSR from "@mpth/react-no-ssr";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
+import PwaContext from "contexts/PwaContext";
 import UserContext from "contexts/UserContext";
 import { getRedirectResult, UserCredential } from "firebase/auth";
 import auth from "libs/auth";
@@ -22,6 +23,7 @@ import "styles/mq-settings.scss";
 import "swiper/scss";
 import "swiper/scss/lazy";
 import { SWRConfig } from "swr";
+import usePwa from "use-pwa";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -35,6 +37,15 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
   const getLayout = Component.getLayout ?? ((page): ReactNode => page);
   const [userCredential, setUserCredential] = useState<UserCredential>();
   const [user] = useAuthState(auth);
+  const {
+    appinstalled,
+    canInstallprompt,
+    enabledPwa,
+    enabledUpdate,
+    isPwa,
+    showInstallPrompt,
+    unregister,
+  } = usePwa();
 
   useEffect(() => {
     if (user) {
@@ -89,32 +100,44 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
           revalidateOnReconnect: false,
         }}
       >
-        <UserContext.Provider value={{ userCredential }}>
-          {getLayout(<Component {...pageProps} />)}
-          <NextNProgress />
-          <NoSSR>
-            <Toaster
-              position="bottom-center"
-              toastOptions={{
-                duration: 4000,
-                style: {
-                  background: "#2d2e30",
-                  color: "#e8eaed",
-                  maxWidth: 400,
-                },
+        <PwaContext.Provider
+          value={{
+            appinstalled,
+            canInstallprompt,
+            enabledPwa,
+            enabledUpdate,
+            isPwa,
+            showInstallPrompt,
+            unregister,
+          }}
+        >
+          <UserContext.Provider value={{ userCredential }}>
+            {getLayout(<Component {...pageProps} />)}
+            <NextNProgress />
+            <NoSSR>
+              <Toaster
+                position="bottom-center"
+                toastOptions={{
+                  duration: 4000,
+                  style: {
+                    background: "#2d2e30",
+                    color: "#e8eaed",
+                    maxWidth: 400,
+                  },
+                }}
+              />
+            </NoSSR>
+            <ScrollToTop
+              color="#e8eaed"
+              style={{
+                background: "#2d2e30",
+                boxShadow: "none",
+                opacity: 0.75,
               }}
+              width="20"
             />
-          </NoSSR>
-          <ScrollToTop
-            color="#e8eaed"
-            style={{
-              background: "#2d2e30",
-              boxShadow: "none",
-              opacity: 0.75,
-            }}
-            width="20"
-          />
-        </UserContext.Provider>
+          </UserContext.Provider>
+        </PwaContext.Provider>
       </SWRConfig>
     </>
   );

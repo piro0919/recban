@@ -1,10 +1,10 @@
 import { Menu, MenuItem, MenuButton, SubMenu } from "@szhsin/react-menu";
+import PwaContext from "contexts/PwaContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import swal from "sweetalert";
-import usePwa from "use-pwa";
 import styles from "./style.module.scss";
 
 export type UserMenuProps = {
@@ -22,9 +22,13 @@ function UserMenu({ imageUrl, name, uid }: UserMenuProps): JSX.Element {
     isPwa,
     showInstallPrompt,
     unregister,
-  } = usePwa();
+  } = useContext(PwaContext);
   const router = useRouter();
   const handleUpdate = useCallback(async () => {
+    if (!unregister) {
+      return;
+    }
+
     const result = await unregister();
 
     if (!result) {
