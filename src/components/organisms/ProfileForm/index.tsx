@@ -53,7 +53,7 @@ function ProfileForm({
   onSubmit,
 }: ProfileFormProps): JSX.Element {
   const {
-    formState: { errors, isDirty, isSubmitting },
+    formState: { errors, isSubmitting },
     handleSubmit,
     register,
     reset,
@@ -122,7 +122,7 @@ function ProfileForm({
         </div>
         <HorizontalRule />
         <div className={styles.buttonWrapper}>
-          <Button disabled={!isDirty || isSubmitting} type="submit">
+          <Button disabled={isSubmitting} type="submit">
             {isNew ? "作成する" : "修正する"}
           </Button>
         </div>
