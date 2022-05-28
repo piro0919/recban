@@ -27,18 +27,20 @@ function UserMenu({ imageUrl, name, uid }: UserMenuProps): JSX.Element {
   const handleUpdate = useCallback(async () => {
     const result = await unregister();
 
-    if (result) {
-      await swal({
-        icon: "success",
-        text: "アップデートが完了しました\n再読み込みを行います",
-        title: "りくばん！のアップデート",
-      });
-
-      router.reload();
-
+    if (!result) {
       return;
     }
+
+    await swal({
+      icon: "success",
+      text: "りくばん！のアップデートが完了しました\n再読み込みを行います",
+      title: "りくばん！のアップデート",
+    });
+
+    router.reload();
   }, [router, unregister]);
+
+  console.log(appinstalled, canInstallprompt, enabledPwa, isPwa);
 
   return (
     <div>
@@ -91,7 +93,7 @@ function UserMenu({ imageUrl, name, uid }: UserMenuProps): JSX.Element {
             <a>ユーザー情報を確認する</a>
           </Link>
         </MenuItem>
-        {enabledPwa && !isPwa && canInstallprompt && !appinstalled ? (
+        {!appinstalled && canInstallprompt && enabledPwa && !isPwa ? (
           <MenuItem className={styles.menuItem} onClick={showInstallPrompt}>
             りくばん！をインストールする
           </MenuItem>

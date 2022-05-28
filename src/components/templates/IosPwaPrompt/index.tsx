@@ -13,7 +13,6 @@ function IosPwaPrompt(): JSX.Element {
   return (
     <PWAPrompt
       copyAddHomeButtonLabel="2) 「ホーム画面に追加」をタップします。"
-      // copyBody="このウェブサイトにはアプリ機能があります。ホーム画面に追加してフルスクリーンおよびオフラインで使用できます。"
       copyBody="このウェブサイトにはアプリ機能があります。ホーム画面に追加してフルスクリーンで使用できます。"
       copyClosePrompt="キャンセル"
       copyShareButtonLabel="1) （四角から矢印が飛び出したマーク）をタップします。"
