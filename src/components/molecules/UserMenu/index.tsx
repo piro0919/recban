@@ -2,9 +2,7 @@ import { Menu, MenuItem, MenuButton, SubMenu } from "@szhsin/react-menu";
 import PwaContext from "contexts/PwaContext";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useCallback, useContext } from "react";
-import swal from "sweetalert";
+import { useContext } from "react";
 import styles from "./style.module.scss";
 
 export type UserMenuProps = {
@@ -18,31 +16,9 @@ function UserMenu({ imageUrl, name, uid }: UserMenuProps): JSX.Element {
     appinstalled,
     canInstallprompt,
     enabledPwa,
-    enabledUpdate,
     isPwa,
     showInstallPrompt,
-    unregister,
   } = useContext(PwaContext);
-  const router = useRouter();
-  const handleUpdate = useCallback(async () => {
-    if (!unregister) {
-      return;
-    }
-
-    const result = await unregister();
-
-    if (!result) {
-      return;
-    }
-
-    await swal({
-      icon: "success",
-      text: "りくばん！のアップデートが完了しました\n再読み込みを行います",
-      title: "りくばん！のアップデート",
-    });
-
-    router.reload();
-  }, [router, unregister]);
 
   return (
     <div>
@@ -98,11 +74,6 @@ function UserMenu({ imageUrl, name, uid }: UserMenuProps): JSX.Element {
         {!appinstalled && canInstallprompt && enabledPwa && !isPwa ? (
           <MenuItem className={styles.menuItem} onClick={showInstallPrompt}>
             りくばん！をインストールする
-          </MenuItem>
-        ) : null}
-        {enabledUpdate && isPwa ? (
-          <MenuItem className={styles.menuItem} onClick={handleUpdate}>
-            りくばん！をアップデートする
           </MenuItem>
         ) : null}
         <MenuItem className={styles.menuItem}>
