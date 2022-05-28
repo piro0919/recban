@@ -9,7 +9,12 @@ import useGenres from "hooks/useGenres";
 import useParts from "hooks/useParts";
 import usePrefectures from "hooks/usePrefectures";
 import { useMemo } from "react";
-import { FieldError, SubmitHandler, useForm } from "react-hook-form";
+import {
+  Controller,
+  FieldError,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
 import * as yup from "yup";
 import styles from "./style.module.scss";
 
@@ -72,6 +77,7 @@ function ArticleForm({
   const parts = useParts();
   const prefectures = usePrefectures();
   const {
+    control,
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
@@ -111,7 +117,10 @@ function ArticleForm({
               <span>
                 タイトル<abbr className={styles.required}>*</abbr>
               </span>
-              <Input {...register("title")} />
+              <Input
+                {...register("title")}
+                placeholder="タイトルを入力してください"
+              />
             </label>
             {errors.title ? (
               <p className={styles.errorMessage}>{errors.title.message}</p>
@@ -123,7 +132,10 @@ function ArticleForm({
                 募集内容<abbr className={styles.required}>*</abbr>
               </span>
               <div className={styles.contentTextareaWrapper}>
-                <Textarea {...register("content")} />
+                <Textarea
+                  {...register("content")}
+                  placeholder="募集内容を入力してください"
+                />
               </div>
             </label>
             {errors.content ? (
@@ -148,7 +160,7 @@ function ArticleForm({
                   setValue("parts", selected);
                 }}
                 options={parts}
-                placeholder=""
+                placeholder="募集パートを選択または入力してください"
                 selectedValues={defaultValues && defaultValues["parts"]}
                 selectionLimit={3}
               />
@@ -174,7 +186,7 @@ function ArticleForm({
                   setValue("genres", selected);
                 }}
                 options={genres}
-                placeholder=""
+                placeholder="ジャンルを選択または入力してください"
                 selectedValues={defaultValues && defaultValues["genres"]}
                 selectionLimit={3}
               />
@@ -190,14 +202,19 @@ function ArticleForm({
               <span>
                 性別<abbr className={styles.required}>*</abbr>
               </span>
-              <Select
-                {...register("sex")}
-                options={[
-                  { label: "", value: "" },
-                  { label: "男女問わない", value: "男女問わない" },
-                  { label: "男性のみ", value: "男性のみ" },
-                  { label: "女性のみ", value: "女性のみ" },
-                ]}
+              <Controller
+                control={control}
+                name="sex"
+                render={({ field: { name, value } }): JSX.Element => (
+                  <Select
+                    onChange={({ value }): void => {
+                      setValue(name, value);
+                    }}
+                    options={["", "男女問わない", "男性のみ", "女性のみ"]}
+                    placeholder="性別を選択してください"
+                    value={value}
+                  />
+                )}
               />
             </label>
             {errors.sex ? (
@@ -211,33 +228,45 @@ function ArticleForm({
               </legend>
               <div className={styles.ageFieldsWrapper}>
                 <span className={styles.ageFieldWrapper}>
-                  <Select
-                    {...register("minAge")}
-                    options={[
-                      { label: "", value: "" },
-                      ...Array(89)
-                        .fill(undefined)
-                        .map((_, index) => ({
-                          label: index + 12,
-                          value: (index + 12).toString(),
-                        })),
-                    ]}
+                  <Controller
+                    control={control}
+                    name="minAge"
+                    render={({ field: { name, value } }): JSX.Element => (
+                      <Select
+                        onChange={({ value }): void => {
+                          setValue(name, value);
+                        }}
+                        options={[
+                          "",
+                          ...Array(89)
+                            .fill(undefined)
+                            .map((_, index) => (index + 12).toString()),
+                        ]}
+                        value={value}
+                      />
+                    )}
                   />
                   歳
                 </span>
                 <span>〜</span>
                 <span className={styles.ageFieldWrapper}>
-                  <Select
-                    {...register("maxAge")}
-                    options={[
-                      { label: "", value: "" },
-                      ...Array(89)
-                        .fill(undefined)
-                        .map((_, index) => ({
-                          label: index + 12,
-                          value: (index + 12).toString(),
-                        })),
-                    ]}
+                  <Controller
+                    control={control}
+                    name="maxAge"
+                    render={({ field: { name, value } }): JSX.Element => (
+                      <Select
+                        onChange={({ value }): void => {
+                          setValue(name, value);
+                        }}
+                        options={[
+                          "",
+                          ...Array(89)
+                            .fill(undefined)
+                            .map((_, index) => (index + 12).toString()),
+                        ]}
+                        value={value}
+                      />
+                    )}
                   />
                   歳
                 </span>
@@ -286,7 +315,7 @@ function ArticleForm({
                   );
                 }}
                 options={prefecturesOptions}
-                placeholder=""
+                placeholder="活動場所を選択または入力してください"
                 selectedValues={
                   defaultValues &&
                   defaultValues["places"].map((place) =>
@@ -309,7 +338,10 @@ function ArticleForm({
               <span>
                 活動頻度<abbr className={styles.required}>*</abbr>
               </span>
-              <Input {...register("frequency")} />
+              <Input
+                {...register("frequency")}
+                placeholder="活動頻度を入力してください"
+              />
             </label>
             {errors.frequency ? (
               <p className={styles.errorMessage}>{errors.frequency.message}</p>
@@ -320,15 +352,25 @@ function ArticleForm({
               <span>
                 志向性<abbr className={styles.required}>*</abbr>
               </span>
-              <Select
-                {...register("ambition")}
-                options={[
-                  { label: "", value: "" },
-                  { label: "アマチュア志向", value: "アマチュア志向" },
-                  { label: "ややアマチュア志向", value: "ややアマチュア志向" },
-                  { label: "ややプロ志向", value: "ややプロ志向" },
-                  { label: "プロ志向", value: "プロ志向" },
-                ]}
+              <Controller
+                control={control}
+                name="ambition"
+                render={({ field: { name, value } }): JSX.Element => (
+                  <Select
+                    onChange={({ value }): void => {
+                      setValue(name, value);
+                    }}
+                    options={[
+                      "",
+                      "アマチュア志向",
+                      "ややアマチュア志向",
+                      "ややプロ志向",
+                      "プロ志向",
+                    ]}
+                    placeholder="志向性を選択してください"
+                    value={value}
+                  />
+                )}
               />
             </label>
             {errors.ambition ? (

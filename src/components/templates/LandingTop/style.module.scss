@@ -65,8 +65,13 @@
 
 .message {
   color: #fff;
-  font-size: 3.2rem;
   text-align: center;
+  @include mq.mq($until: tablet) {
+    font-size: 2.4rem;
+  }
+  @include mq.mq($from: tablet) {
+    font-size: 3.2rem;
+  }
 }
 
 .heading1Wrapper {

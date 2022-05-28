@@ -26,7 +26,7 @@ function UserId({
 }: UserIdProps): JSX.Element {
   return (
     <>
-      <Seo noindex={true} title={`${name}のアカウント情報`} />
+      <Seo noindex={true} title={`${name} さんのアカウント情報`} />
       <ProfileTop
         email={email}
         enabledContactEmail={enabledContactEmail}

@@ -27,9 +27,7 @@ const schema = yup
         is: true,
         then: yup
           .string()
-          .required(
-            "メールで連絡を可能にしたい場合、メールアドレスを入力してください"
-          ),
+          .required("メールで連絡したい場合、メールアドレスを入力してください"),
       })
       .when("notification", {
         is: true,
@@ -55,7 +53,7 @@ function ProfileForm({
   onSubmit,
 }: ProfileFormProps): JSX.Element {
   const {
-    formState: { errors, isSubmitting },
+    formState: { errors, isDirty, isSubmitting },
     handleSubmit,
     register,
     reset,
@@ -84,7 +82,7 @@ function ProfileForm({
                 お名前 / ハンドルネーム
                 <abbr className={styles.required}>*</abbr>
               </span>
-              <Input {...register("name", { required: true })} />
+              <Input {...register("name")} />
             </label>
             <p className={styles.error}>{errors.name?.message}</p>
           </div>
@@ -124,7 +122,7 @@ function ProfileForm({
         </div>
         <HorizontalRule />
         <div className={styles.buttonWrapper}>
-          <Button disabled={isSubmitting} type="submit">
+          <Button disabled={!isDirty || isSubmitting} type="submit">
             {isNew ? "作成する" : "修正する"}
           </Button>
         </div>

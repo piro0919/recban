@@ -12,6 +12,7 @@ import Head from "next/head";
 import NextNProgress from "nextjs-progressbar";
 import { setCookie, destroyCookie } from "nookies";
 import { ReactElement, ReactNode, useEffect, useState } from "react";
+import "react-dropdown/style.css";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Toaster } from "react-hot-toast";
 import ScrollToTop from "react-scroll-to-top";

@@ -81,7 +81,11 @@ function LastSlideChildren({
   );
 }
 
-function LandingTop(): JSX.Element {
+export type LandingTopProps = {
+  totalNumberOfArticles: number;
+};
+
+function LandingTop({ totalNumberOfArticles }: LandingTopProps): JSX.Element {
   const { height } = useWindowSize();
   const style = useMemo<CSSProperties>(
     () => ({ height: `${height}px` }),
@@ -142,7 +146,7 @@ function LandingTop(): JSX.Element {
         <div className={styles.messageWindowWrapper}>
           <div className={styles.messageWindow}>
             <p className={styles.message}>
-              「りくばん！」の利用は完全に無料！誰でも簡単に使えるよ！
+              「りくばん！」ではバンドメンバーの募集と応募ができます！
             </p>
           </div>
         </div>
@@ -169,7 +173,9 @@ function LandingTop(): JSX.Element {
         </div>
         <div className={styles.messageWindowWrapper}>
           <div className={styles.messageWindow}>
-            <p className={styles.message}>hoge</p>
+            <p className={styles.message}>
+              「りくばん！」の利用は完全に無料！誰でも簡単に使えるよ！
+            </p>
           </div>
         </div>
       </SwiperSlide>
@@ -195,7 +201,9 @@ function LandingTop(): JSX.Element {
         </div>
         <div className={styles.messageWindowWrapper}>
           <div className={styles.messageWindow}>
-            <p className={styles.message}>fuga</p>
+            <p className={styles.message}>
+              「りくばん！」には広告の表示もありません！
+            </p>
           </div>
         </div>
       </SwiperSlide>
@@ -221,7 +229,9 @@ function LandingTop(): JSX.Element {
         </div>
         <div className={styles.messageWindowWrapper}>
           <div className={styles.messageWindow}>
-            <p className={styles.message}>piyo</p>
+            <p className={styles.message}>
+              {`現在 ${totalNumberOfArticles} 件の記事がバンドメンバーを募集しているよ！`}
+            </p>
           </div>
         </div>
       </SwiperSlide>

@@ -1,5 +1,45 @@
-.select {
+.control,
+.menu :global(.Dropdown-option) {
+  align-items: center;
   background: #2d2e30;
-  color: #e8eaed;
-  padding: 4px 8px;
+  color: #fff;
+  display: flex;
+  padding-bottom: 3px;
+  padding-right: 32px;
+  padding-top: 3px;
+  @include mq.mq($until: tablet) {
+    height: 25px;
+  }
+  @include mq.mq($from: tablet) {
+    height: 30px;
+  }
+}
+
+.control,
+.menu {
+  border: 0;
+}
+
+.menu {
+  margin: 1px 0 0;
+}
+
+.placeholder:not(:global(.is-selected)) {
+  color: #9f9fa0;
+}
+
+.menu :global(.Dropdown-option) {
+  border-radius: 0;
+  white-space: nowrap;
+}
+
+.menu :global(.Dropdown-option):hover {
+  background: #0096fb;
+  cursor: pointer;
+}
+
+.arrow {
+  @include mq.mq($until: tablet) {
+    top: 11px;
+  }
 }

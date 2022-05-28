@@ -1,7 +1,7 @@
 import ArticlesTop, {
   ArticlesTopProps,
 } from "components/templates/ArticlesTop";
-import LandingTop from "components/templates/LandingTop";
+import LandingTop, { LandingTopProps } from "components/templates/LandingTop";
 import Layout from "components/templates/Layout";
 import Seo from "components/templates/Seo";
 import dayjs from "libs/dayjs";
@@ -17,9 +17,9 @@ export type PagesProps =
   | (Pick<ArticlesTopProps, "articles" | "defaultValues" | "total"> & {
       isFirstAccess: false;
     })
-  | {
+  | (Pick<LandingTopProps, "totalNumberOfArticles"> & {
       isFirstAccess: true;
-    };
+    });
 
 function Pages(props: PagesProps): JSX.Element {
   const router = useRouter();
@@ -35,9 +35,9 @@ function Pages(props: PagesProps): JSX.Element {
 
   return (
     <>
-      <Seo noindex={false} title="バンドメンバーを見つけよう！" />
+      <Seo noindex={false} title="最高のバンドメンバーと出会おう！" />
       {props.isFirstAccess ? (
-        <LandingTop />
+        <LandingTop totalNumberOfArticles={props.totalNumberOfArticles} />
       ) : (
         <Layout>
           <ArticlesTop
@@ -56,11 +56,21 @@ export const getServerSideProps: GetServerSideProps<PagesProps> = async (
   ctx
 ) => {
   const { isFirstAccess } = nookies.get(ctx);
+  const client = getClient();
+
+  if (!client) {
+    return signout;
+  }
 
   if (isFirstAccess !== "false") {
+    const { total } = await client.getEntries<Contentful.IArticlesFields>({
+      content_type: "articles" as Contentful.CONTENT_TYPE,
+    });
+
     return {
       props: {
         isFirstAccess: true,
+        totalNumberOfArticles: total,
       },
     };
   }
@@ -68,7 +78,6 @@ export const getServerSideProps: GetServerSideProps<PagesProps> = async (
   const {
     query: { age, ambition, genre, part, place, query, sex },
   } = ctx;
-  const client = getClient();
 
   if (
     Array.isArray(age) ||
@@ -77,8 +86,7 @@ export const getServerSideProps: GetServerSideProps<PagesProps> = async (
     Array.isArray(part) ||
     Array.isArray(place) ||
     Array.isArray(query) ||
-    Array.isArray(sex) ||
-    !client
+    Array.isArray(sex)
   ) {
     return signout;
   }

@@ -16,7 +16,7 @@ export type MessageFormProps = {
 
 function MessageForm({ onSubmit }: MessageFormProps): JSX.Element {
   const {
-    formState: { isSubmitSuccessful, isSubmitting },
+    formState: { isDirty, isSubmitSuccessful, isSubmitting },
     handleSubmit,
     register,
     reset,
@@ -53,7 +53,7 @@ function MessageForm({ onSubmit }: MessageFormProps): JSX.Element {
             trailWidth={8}
           />
         </div>
-        <button className={styles.button} disabled={isSubmitting}>
+        <button className={styles.button} disabled={!isDirty || isSubmitting}>
           <GrSend className={styles.icon} />
         </button>
       </div>

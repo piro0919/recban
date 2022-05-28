@@ -4,7 +4,7 @@ import Select from "components/atoms/Select";
 import useGenres from "hooks/useGenres";
 import useParts from "hooks/useParts";
 import usePrefectures from "hooks/usePrefectures";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import styles from "./style.module.scss";
 
 type FieldValues = {
@@ -27,9 +27,11 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
   const parts = useParts();
   const prefectures = usePrefectures();
   const {
+    control,
     formState: { isSubmitting },
     handleSubmit,
     register,
+    setValue,
   } = useForm<FieldValues>({
     defaultValues,
   });
@@ -46,119 +48,115 @@ function SearchForm({ defaultValues, onSubmit }: SearchFormProps): JSX.Element {
           </label>
           <label className={styles.label}>
             <span className={styles.label2}>募集パート</span>
-            <Select
-              {...register("part")}
-              options={[
-                {
-                  label: "",
-                  value: "",
-                },
-                ...parts.map((part) => ({ label: part, value: part })),
-              ]}
+            <Controller
+              control={control}
+              name="part"
+              render={({ field: { name, value } }): JSX.Element => (
+                <Select
+                  onChange={({ value }): void => {
+                    setValue(name, value);
+                  }}
+                  options={["", ...parts]}
+                  value={value}
+                />
+              )}
             />
           </label>
           <label className={styles.label}>
             <span className={styles.label2}>ジャンル</span>
-            <Select
-              {...register("genre")}
-              options={[
-                {
-                  label: "",
-                  value: "",
-                },
-                ...genres.map((genre) => ({ label: genre, value: genre })),
-              ]}
+            <Controller
+              control={control}
+              name="genre"
+              render={({ field: { name, value } }): JSX.Element => (
+                <Select
+                  onChange={({ value }): void => {
+                    setValue(name, value);
+                  }}
+                  options={["", ...genres]}
+                  value={value}
+                />
+              )}
             />
           </label>
           <label className={styles.label}>
             <span className={styles.label2}>性別</span>
-            <Select
-              {...register("sex")}
-              options={[
-                {
-                  label: "",
-                  value: "",
-                },
-                {
-                  label: "男女問わない",
-                  value: "男女問わない",
-                },
-                {
-                  label: "男性のみ",
-                  value: "男性のみ",
-                },
-                {
-                  label: "女性のみ",
-                  value: "女性のみ",
-                },
-              ]}
+            <Controller
+              control={control}
+              name="sex"
+              render={({ field: { name, value } }): JSX.Element => (
+                <Select
+                  onChange={({ value }): void => {
+                    setValue(name, value);
+                  }}
+                  options={["", "男女問わない", "男性のみ", "女性のみ"]}
+                  value={value}
+                />
+              )}
             />
           </label>
           <label className={styles.label}>
             <span className={styles.label2}>年齢</span>
             <span className={styles.ageWrapper}>
-              <Select
-                {...register("age")}
-                options={[
-                  {
-                    label: "",
-                    value: "",
-                  },
-                  ...Array(89)
-                    .fill(undefined)
-                    .map((_, index) => ({
-                      label: index + 12,
-                      value: (index + 12).toString(),
-                    })),
-                ]}
+              <Controller
+                control={control}
+                name="age"
+                render={({ field: { name, value } }): JSX.Element => (
+                  <Select
+                    onChange={({ value }): void => {
+                      setValue(name, value);
+                    }}
+                    options={[
+                      "",
+                      ...Array(89)
+                        .fill(undefined)
+                        .map((_, index) => (index + 12).toString()),
+                    ]}
+                    value={value}
+                  />
+                )}
               />
               歳
             </span>
           </label>
           <label className={styles.label}>
             <span className={styles.label2}>活動場所</span>
-            <Select
-              {...register("place")}
-              options={[
-                {
-                  label: "",
-                  value: "",
-                },
-                ...prefectures.flatMap(({ prefectures }) =>
-                  prefectures.map((prefecture) => ({
-                    label: prefecture,
-                    value: prefecture,
-                  }))
-                ),
-              ]}
+            <Controller
+              control={control}
+              name="place"
+              render={({ field: { name, value } }): JSX.Element => (
+                <Select
+                  onChange={({ value }): void => {
+                    setValue(name, value);
+                  }}
+                  options={[
+                    "",
+                    ...prefectures.flatMap(({ prefectures }) => prefectures),
+                  ]}
+                  value={value}
+                />
+              )}
             />
           </label>
           <label className={styles.label}>
             <span className={styles.label2}>志向性</span>
-            <Select
-              {...register("ambition")}
-              options={[
-                {
-                  label: "",
-                  value: "",
-                },
-                {
-                  label: "アマチュア志向",
-                  value: "アマチュア志向",
-                },
-                {
-                  label: "ややアマチュア志向",
-                  value: "ややアマチュア志向",
-                },
-                {
-                  label: "ややプロ志向",
-                  value: "ややプロ志向",
-                },
-                {
-                  label: "プロ志向",
-                  value: "プロ志向",
-                },
-              ]}
+            <Controller
+              control={control}
+              name="ambition"
+              render={({ field: { name, value } }): JSX.Element => (
+                <Select
+                  onChange={({ value }): void => {
+                    setValue(name, value);
+                  }}
+                  options={[
+                    "",
+                    "アマチュア志向",
+                    "ややアマチュア志向",
+                    "ややプロ志向",
+                    "プロ志向",
+                  ]}
+                  value={value}
+                />
+              )}
             />
           </label>
         </div>

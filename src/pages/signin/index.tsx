@@ -12,6 +12,7 @@ import twitterAuthProvider from "libs/twitterAuthProvider";
 import { useRouter } from "next/router";
 import { GetUsersUidData } from "pages/api/users/[uid]";
 import { ReactElement, useCallback, useContext, useEffect } from "react";
+import { useBoolean } from "usehooks-ts";
 
 function Signin(): JSX.Element {
   const router = useRouter();
@@ -27,21 +28,31 @@ function Signin(): JSX.Element {
   }, []);
   const { userCredential } = useContext(UserContext);
   const { loading, uid } = useUser();
+  const {
+    setFalse: offIsLoading,
+    setTrue: onIsLoading,
+    value: isLoading,
+  } = useBoolean(false);
 
   useEffect(() => {
     if (!uid || !userCredential) {
       return;
     }
 
+    onIsLoading();
+
     axios
       .get<GetUsersUidData, AxiosResponse<GetUsersUidData>>(`/api/users/${uid}`)
-      .then(async () => {
-        await router.replace("/");
+      .then(() => {
+        router.replace("/");
       })
-      .catch(async () => {
-        await router.replace(`/${uid}/new`);
+      .catch(() => {
+        router.replace(`/${uid}/new`);
+      })
+      .finally(() => {
+        offIsLoading();
       });
-  }, [router, uid, userCredential]);
+  }, [offIsLoading, onIsLoading, router, uid, userCredential]);
 
   return (
     <>
@@ -50,7 +61,7 @@ function Signin(): JSX.Element {
         onSignInGoogle={handleSignInGoogle}
         onSignInTwitter={handleSignInTwitter}
       />
-      {loading ? <Loading /> : null}
+      {loading || isLoading ? <Loading /> : null}
     </>
   );
 }

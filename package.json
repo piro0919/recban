@@ -27,6 +27,8 @@
     "react": "18.1.0",
     "react-cool-portal": "1.2.0",
     "react-dom": "18.1.0",
+    "react-dropdown": "1.10.0",
+    "react-dropdown-select": "4.9.0",
     "react-ellipsis-pjs": "2.1.2",
     "react-firebase-hooks": "5.0.3",
     "react-hook-form": "7.30.0",

@@ -187,6 +187,31 @@ function AboutTop(): JSX.Element {
             </p>
           </div>
         </Article>
+        <Article
+          heading={
+            <div className={styles.heading2Wrapper}>
+              <Heading2 text="スペシャルサンクス" />
+            </div>
+          }
+        >
+          <div className={styles.inner2}>
+            <p>
+              <ul className={styles.list}>
+                <li>
+                  <a
+                    className={styles.anchor}
+                    href="https://twitter.com/708_nhh"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    7:08 さん
+                  </a>
+                  （キャラクターイラストの作成）
+                </li>
+              </ul>
+            </p>
+          </div>
+        </Article>
       </div>
     </div>
   );

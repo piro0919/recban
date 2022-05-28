@@ -1,52 +1,52 @@
-import {
-  FocusEventHandler,
-  ChangeEventHandler,
-  forwardRef,
-  ForwardedRef,
-  ReactNode,
-  useMemo,
-} from "react";
+import dayjs from "dayjs";
+import { useCallback, useRef, useState } from "react";
+import Dropdown, { ReactDropdownProps } from "react-dropdown";
+import { useOnClickOutside } from "usehooks-ts";
 import styles from "./style.module.scss";
 
-type Option = {
-  label: ReactNode;
-  value: string;
-};
+export type SelectProps = Pick<
+  ReactDropdownProps,
+  "onChange" | "options" | "placeholder" | "value"
+>;
 
-export type SelectProps = {
-  name?: string;
-  onBlur?: FocusEventHandler<HTMLSelectElement>;
-  onChange?: ChangeEventHandler<HTMLSelectElement>;
-  options: Option[];
-  value?: string;
-};
+function Select({
+  onChange,
+  options,
+  placeholder = "",
+  value,
+}: SelectProps): JSX.Element {
+  const [key, setKey] = useState("");
+  const ref = useRef(null);
+  const handleClickOutside = useCallback(() => {
+    setKey(dayjs().format());
+  }, []);
 
-function Select(
-  { name, onBlur, onChange, options, value }: SelectProps,
-  ref: ForwardedRef<HTMLSelectElement>
-): JSX.Element {
-  const items = useMemo(
-    () =>
-      options.map(({ label, value }) => (
-        <option key={value} value={value}>
-          {label}
-        </option>
-      )),
-    [options]
-  );
+  useOnClickOutside(ref, handleClickOutside);
 
   return (
-    <select
-      className={styles.select}
-      name={name}
-      onBlur={onBlur}
-      onChange={onChange}
+    <span
       ref={ref}
-      value={value}
+      style={{
+        minWidth: `calc(${Math.max(
+          ...[...options, placeholder].map(
+            (option) => (option as string).length
+          )
+        )} * (1.4rem + 1px) + 42px)`,
+      }}
     >
-      {items}
-    </select>
+      <Dropdown
+        arrowClassName={styles.arrow}
+        controlClassName={styles.control}
+        key={key}
+        menuClassName={styles.menu}
+        onChange={onChange}
+        options={options}
+        placeholder={placeholder}
+        placeholderClassName={styles.placeholder}
+        value={value}
+      />
+    </span>
   );
 }
 
-export default forwardRef<HTMLSelectElement, SelectProps>(Select);
+export default Select;
