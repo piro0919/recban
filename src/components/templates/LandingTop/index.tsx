@@ -19,6 +19,7 @@ function SlideNextButton({ isLastSlide }: SlideNextButtonProps): JSX.Element {
       setCookie(null, "isFirstAccess", "false", {
         maxAge: 60 * 60 * 24 * 30 * 12 * 10,
         path: "/",
+        sameSite: "Lax",
       });
 
       router.reload();

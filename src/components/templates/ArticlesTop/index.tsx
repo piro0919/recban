@@ -2,18 +2,22 @@ import ArticleList, {
   ArticleListProps,
 } from "components/organisms/ArticleList";
 import SearchForm, { SearchFormProps } from "components/organisms/SearchForm";
+import { MouseEventHandler } from "react";
+import { FaSearchPlus } from "react-icons/fa";
 import { FcEmptyFilter, FcFilledFilter } from "react-icons/fc";
 import { useBoolean } from "usehooks-ts";
 import styles from "./style.module.scss";
 
 export type ArticlesTopProps = Pick<ArticleListProps, "articles"> &
   Pick<SearchFormProps, "defaultValues" | "onSubmit"> & {
+    onSaveSearchConditions: MouseEventHandler<HTMLButtonElement>;
     total: number;
   };
 
 function ArticlesTop({
   articles,
   defaultValues,
+  onSaveSearchConditions,
   onSubmit,
   total,
 }: ArticlesTopProps): JSX.Element {
@@ -33,13 +37,16 @@ function ArticlesTop({
           <div
             className={styles.counterWrapper}
           >{`募集中の記事：${total} 件`}</div>
+          <button onClick={onSaveSearchConditions}>
+            <FaSearchPlus color="#8ab4f8" size={18} />
+          </button>
           {isOpen ? (
             <button onClick={offIsOpen}>
-              <FcFilledFilter size={24} />
+              <FcFilledFilter size={22} />
             </button>
           ) : (
             <button onClick={onIsOpen}>
-              <FcEmptyFilter size={24} />
+              <FcEmptyFilter size={22} />
             </button>
           )}
         </div>

@@ -34,6 +34,7 @@
 
 .detailWrapper2 {
   align-items: center;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  gap: 24px;
+  grid-template: auto / 1fr auto auto;
 }

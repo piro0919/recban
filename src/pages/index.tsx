@@ -6,12 +6,15 @@ import Layout from "components/templates/Layout";
 import Seo from "components/templates/Seo";
 import dayjs from "libs/dayjs";
 import getClient from "libs/getClient";
+import infoToast from "libs/infoToast";
 import signout from "libs/signout";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import nookies from "nookies";
+import nookies, { setCookie } from "nookies";
 import queryString from "query-string";
 import { useCallback } from "react";
+import toast from "react-hot-toast";
+import swal from "sweetalert";
 
 export type PagesProps =
   | (Pick<ArticlesTopProps, "articles" | "defaultValues" | "total"> & {
@@ -32,6 +35,32 @@ function Pages(props: PagesProps): JSX.Element {
     },
     [router]
   );
+  const handleSaveSearchConditions = useCallback(async () => {
+    if (props.isFirstAccess) {
+      return;
+    }
+
+    const result = await swal({
+      buttons: ["キャンセル", "OK"],
+      icon: "info",
+      text: "検索条件を保存すると、検索条件を設定していない検索時に保存された検索条件が自動的に反映されるようになります\n検索条件を保存しますか？",
+      title: "検索条件の保存",
+    });
+
+    if (!result) {
+      infoToast("検索条件の保存をキャンセルしました");
+
+      return;
+    }
+
+    setCookie(null, "searchConditions", JSON.stringify(props.defaultValues), {
+      maxAge: 60 * 60 * 24 * 30 * 12 * 10,
+      path: "/",
+      sameSite: "Lax",
+    });
+
+    toast.success("検索条件を保存しました");
+  }, [props]);
 
   return (
     <>
@@ -43,6 +72,7 @@ function Pages(props: PagesProps): JSX.Element {
           <ArticlesTop
             articles={props.articles}
             defaultValues={props.defaultValues}
+            onSaveSearchConditions={handleSaveSearchConditions}
             onSubmit={handleSubmit}
             total={props.total}
           />
@@ -55,7 +85,7 @@ function Pages(props: PagesProps): JSX.Element {
 export const getServerSideProps: GetServerSideProps<PagesProps> = async (
   ctx
 ) => {
-  const { isFirstAccess } = nookies.get(ctx);
+  const { isFirstAccess, searchConditions } = nookies.get(ctx);
   const client = getClient();
 
   if (!client) {
@@ -76,8 +106,24 @@ export const getServerSideProps: GetServerSideProps<PagesProps> = async (
   }
 
   const {
-    query: { age, ambition, genre, part, place, query, sex },
+    query: {
+      age: queryAge,
+      ambition: queryAmbition,
+      genre: queryAgenre,
+      part: queryPart,
+      place: queryPlace,
+      query: queryQuery,
+      sex: querySex,
+    },
   } = ctx;
+
+  let age = queryAge;
+  let ambition = queryAmbition;
+  let genre = queryAgenre;
+  let part = queryPart;
+  let place = queryPlace;
+  let query = queryQuery;
+  let sex = querySex;
 
   if (
     Array.isArray(age) ||
@@ -89,6 +135,35 @@ export const getServerSideProps: GetServerSideProps<PagesProps> = async (
     Array.isArray(sex)
   ) {
     return signout;
+  }
+
+  if (
+    searchConditions &&
+    !age &&
+    !ambition &&
+    !genre &&
+    !part &&
+    !place &&
+    !query &&
+    !sex
+  ) {
+    const {
+      age: searchConditionAge,
+      ambition: searchConditionAmbition,
+      genre: searchConditionGenre,
+      part: searchConditionPart,
+      place: searchConditionPlace,
+      query: searchConditionQuery,
+      sex: searchConditionSex,
+    } = JSON.parse(searchConditions);
+
+    age = searchConditionAge || undefined;
+    ambition = searchConditionAmbition || undefined;
+    genre = searchConditionGenre || undefined;
+    part = searchConditionPart || undefined;
+    place = searchConditionPlace || undefined;
+    query = searchConditionQuery || undefined;
+    sex = searchConditionSex || undefined;
   }
 
   const { articles, total } = await client

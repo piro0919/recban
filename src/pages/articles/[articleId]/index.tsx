@@ -8,6 +8,7 @@ import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import useUser from "hooks/useUser";
 import dayjs from "libs/dayjs";
 import getClient from "libs/getClient";
+import infoToast from "libs/infoToast";
 import signout from "libs/signout";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
@@ -19,7 +20,6 @@ import {
 } from "pages/api/messages";
 import queryString from "query-string";
 import { ReactElement, useCallback } from "react";
-import toast from "react-hot-toast";
 
 export type ArticleIdProps = Pick<
   ArticleDetailProps,
@@ -71,7 +71,7 @@ function ArticleId({
   const router = useRouter();
   const handleSendMessage = useCallback(async () => {
     if (!userUid) {
-      toast(
+      infoToast(
         <p>
           <Link href="/signin">
             <a
@@ -127,7 +127,7 @@ function ArticleId({
   }, [articleId, router, userUid]);
   const handleTransitionEmail = useCallback(() => {
     if (!userUid) {
-      toast(
+      infoToast(
         <p>
           <Link href="/signin">
             <a

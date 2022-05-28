@@ -4,6 +4,7 @@ import MyEmailNew, { MyEmailNewProps } from "components/templates/MyEmailNew";
 import Seo from "components/templates/Seo";
 import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import getClient from "libs/getClient";
+import infoToast from "libs/infoToast";
 import signout from "libs/signout";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
@@ -65,7 +66,7 @@ function New({
       return;
     }
 
-    toast(
+    infoToast(
       <p>
         <Link href={`/${uid}/new`}>
           <a

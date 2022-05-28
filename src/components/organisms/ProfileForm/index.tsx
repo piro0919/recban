@@ -3,9 +3,9 @@ import Button from "components/atoms/Button";
 import Checkbox from "components/atoms/Checkbox";
 import HorizontalRule from "components/atoms/HorizontalRule";
 import Input from "components/atoms/Input";
+import infoToast from "libs/infoToast";
 import { useCallback, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import { FcInfo } from "react-icons/fc";
 import * as yup from "yup";
 import styles from "./style.module.scss";
@@ -62,10 +62,10 @@ function ProfileForm({
     resolver: yupResolver(schema),
   });
   const handleEnabledContactEmail = useCallback(() => {
-    toast("メールによる募集および応募が可能になります");
+    infoToast("メールによる募集および応募が可能になります");
   }, []);
   const handleNotification = useCallback(() => {
-    toast("メッセージが届いた際にメールが届きます");
+    infoToast("メッセージが届いた際にメールが届きます");
   }, []);
 
   useEffect(() => {

@@ -8,6 +8,7 @@ import Seo from "components/templates/Seo";
 import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import dayjs from "libs/dayjs";
 import getClient from "libs/getClient";
+import infoToast from "libs/infoToast";
 import signout from "libs/signout";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
@@ -70,7 +71,7 @@ function ArticleId({
     });
 
     if (!result) {
-      toast("募集の終了をキャンセルしました");
+      infoToast("募集の終了をキャンセルしました");
 
       return;
     }

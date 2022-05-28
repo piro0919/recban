@@ -1,6 +1,7 @@
 import Heading2 from "components/atoms/Heading2";
 import Article from "components/molecules/Article";
 import useUser from "hooks/useUser";
+import infoToast from "libs/infoToast";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { MouseEventHandler, useCallback } from "react";
@@ -16,7 +17,7 @@ function AboutTop(): JSX.Element {
       e.preventDefault();
 
       if (!uid) {
-        toast(
+        infoToast(
           <p>
             <Link href="/signin">
               <a
@@ -30,8 +31,7 @@ function AboutTop(): JSX.Element {
               </a>
             </Link>
             すると連絡可能になります
-          </p>,
-          { id: "_app" }
+          </p>
         );
 
         return;
@@ -45,7 +45,7 @@ function AboutTop(): JSX.Element {
   const handleCopy = useCallback(async () => {
     await copy(process.env.NEXT_PUBLIC_ADMIN_EMAIL || "");
 
-    toast.success("メールアドレスをコピーしました", { id: "_app" });
+    toast.success("メールアドレスをコピーしました");
   }, [copy]);
 
   return (
