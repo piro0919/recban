@@ -1,8 +1,46 @@
+import { EntryCollection } from "contentful";
 import { Entry } from "contentful-management";
+import getClient from "libs/getClient";
 import getEnvironment from "libs/getEnvironment";
 import getHandler from "libs/getHandler";
 
-const handler = getHandler<PostArticlesBody>();
+const handler = getHandler<GetArticlesData | PostArticlesData>();
+
+export type GetArticlesQuery = {
+  uid: string;
+};
+
+type ExtendedGetRequest = {
+  query: GetArticlesQuery;
+};
+
+export type GetArticlesData = EntryCollection<Contentful.IArticles>;
+
+type ExtendedGetResponse = {
+  json: (body: GetArticlesData) => void;
+};
+
+handler.get<ExtendedGetRequest, ExtendedGetResponse>(
+  async ({ query: { uid } }, res) => {
+    const client = getClient();
+
+    if (!client) {
+      res.status(404);
+      res.end();
+
+      return;
+    }
+
+    const entryCollection = await client.getEntries<Contentful.IArticles>({
+      content_type: "articles" as Contentful.CONTENT_TYPE,
+      "fields.uid": uid,
+    });
+
+    res.status(200);
+    res.json(entryCollection);
+    res.end();
+  }
+);
 
 export type PostArticlesBody = Contentful.IArticlesFields;
 

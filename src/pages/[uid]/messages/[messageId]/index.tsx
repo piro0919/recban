@@ -60,6 +60,8 @@ function MessageId({
       const message = `${dayjs().format()},${
         isApplicant ? "applicant" : "recruiter"
       },${content}`;
+      // 最新のメッセージを取得する
+      const data = await mutate();
       const messages =
         data && data.fields.messages
           ? [...data.fields.messages, message]
@@ -99,7 +101,6 @@ function MessageId({
       articleId,
       collocutorNotification,
       collocutorUid,
-      data,
       isApplicant,
       messageId,
       mutate,

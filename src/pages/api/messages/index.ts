@@ -8,7 +8,8 @@ const handler = getHandler<GetMessagesData | PostMessagesData>();
 
 export type GetMessagesQuery = {
   applicantUserId?: string;
-  articleId: string;
+  articleId?: string;
+  unreadUser?: "applicant" | "recruiter";
 };
 
 type ExtendedGetRequest = {
@@ -22,7 +23,7 @@ type ExtendedGetResponse = {
 };
 
 handler.get<ExtendedGetRequest, ExtendedGetResponse>(
-  async ({ query: { applicantUserId, articleId } }, res) => {
+  async ({ query: { applicantUserId, articleId, unreadUser } }, res) => {
     const client = getClient();
 
     if (!client) {
@@ -36,6 +37,7 @@ handler.get<ExtendedGetRequest, ExtendedGetResponse>(
       content_type: "messages" as Contentful.CONTENT_TYPE,
       "fields.applicantUid": applicantUserId,
       "fields.articleId": articleId,
+      "fields.unreadUser": unreadUser,
     });
 
     res.status(200);

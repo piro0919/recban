@@ -1,6 +1,5 @@
 import Footer from "components/organisms/Footer";
 import Header from "components/organisms/Header";
-import IosPwaPrompt from "components/templates/IosPwaPrompt";
 import { CSSProperties, ReactNode, useMemo } from "react";
 import { useWindowSize } from "usehooks-ts";
 import styles from "./style.module.scss";
@@ -33,7 +32,6 @@ function Layout({ children }: LayoutProps): JSX.Element {
           </div>
         </div>
       </div>
-      <IosPwaPrompt />
     </>
   );
 }

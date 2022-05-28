@@ -109,7 +109,7 @@ export const getServerSideProps: GetServerSideProps<PagesProps> = async (
     query: {
       age: queryAge,
       ambition: queryAmbition,
-      genre: queryAgenre,
+      genre: queryGenre,
       part: queryPart,
       place: queryPlace,
       query: queryQuery,
@@ -117,25 +117,25 @@ export const getServerSideProps: GetServerSideProps<PagesProps> = async (
     },
   } = ctx;
 
+  if (
+    Array.isArray(queryAge) ||
+    Array.isArray(queryAmbition) ||
+    Array.isArray(queryGenre) ||
+    Array.isArray(queryPart) ||
+    Array.isArray(queryPlace) ||
+    Array.isArray(queryQuery) ||
+    Array.isArray(querySex)
+  ) {
+    return signout;
+  }
+
   let age = queryAge;
   let ambition = queryAmbition;
-  let genre = queryAgenre;
+  let genre = queryGenre;
   let part = queryPart;
   let place = queryPlace;
   let query = queryQuery;
   let sex = querySex;
-
-  if (
-    Array.isArray(age) ||
-    Array.isArray(ambition) ||
-    Array.isArray(genre) ||
-    Array.isArray(part) ||
-    Array.isArray(place) ||
-    Array.isArray(query) ||
-    Array.isArray(sex)
-  ) {
-    return signout;
-  }
 
   if (
     searchConditions &&
