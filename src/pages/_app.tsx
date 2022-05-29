@@ -13,6 +13,7 @@ import infoToast from "libs/infoToast";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { GoogleAnalytics, usePagesViews } from "nextjs-google-analytics";
 import NextNProgress from "nextjs-progressbar";
 import { setCookie, destroyCookie } from "nookies";
 import queryString from "query-string";
@@ -144,6 +145,8 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
     callback();
   }, [user]);
 
+  usePagesViews();
+
   return (
     <>
       <Head>
@@ -175,6 +178,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
           }}
         >
           <UserContext.Provider value={{ userCredential }}>
+            <GoogleAnalytics />
             {getLayout(<Component {...pageProps} />)}
             <NextNProgress />
             <NoSSR>
