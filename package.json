@@ -11,6 +11,7 @@
     "@vespaiach/axios-fetch-adapter": "0.2.2",
     "alphabet-to-number": "1.0.0",
     "axios": "0.26.1",
+    "babel-plugin-add-react-displayname": "0.0.5",
     "contentful": "9.1.28",
     "contentful-management": "10.3.1",
     "dayjs": "1.11.2",
