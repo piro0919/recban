@@ -7,6 +7,7 @@ import UserContext from "contexts/UserContext";
 import { signInWithRedirect } from "firebase/auth";
 import useUser from "hooks/useUser";
 import auth from "libs/auth";
+import facebookAuthProvider from "libs/facebookAuthProvider";
 import googleAuthProvider from "libs/googleAuthProvider";
 import twitterAuthProvider from "libs/twitterAuthProvider";
 import { useRouter } from "next/router";
@@ -16,6 +17,11 @@ import { useBoolean } from "usehooks-ts";
 
 function Signin(): JSX.Element {
   const router = useRouter();
+  const handleSignInFacebook = useCallback<
+    NonNullable<SignInProps["onSignInFacebook"]>
+  >(() => {
+    signInWithRedirect(auth, facebookAuthProvider);
+  }, []);
   const handleSignInGoogle = useCallback<
     NonNullable<SignInProps["onSignInGoogle"]>
   >(() => {
@@ -43,11 +49,11 @@ function Signin(): JSX.Element {
 
     axios
       .get<GetUsersUidData, AxiosResponse<GetUsersUidData>>(`/api/users/${uid}`)
-      .then(() => {
-        router.replace("/");
+      .then(async () => {
+        await router.replace("/");
       })
-      .catch(() => {
-        router.replace(`/${uid}/new`);
+      .catch(async () => {
+        await router.replace(`/${uid}/new`);
       })
       .finally(() => {
         offIsLoading();
@@ -58,6 +64,7 @@ function Signin(): JSX.Element {
     <>
       <Seo noindex={true} title="サインイン" />
       <SignIn
+        onSignInFacebook={handleSignInFacebook}
         onSignInGoogle={handleSignInGoogle}
         onSignInTwitter={handleSignInTwitter}
       />

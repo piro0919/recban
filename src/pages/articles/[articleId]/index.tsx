@@ -1,9 +1,10 @@
+import { AtoN } from "alphabet-to-number";
 import axios, { AxiosResponse } from "axios";
 import ArticleDetail, {
   ArticleDetailProps,
 } from "components/templates/ArticleDetail";
 import Layout from "components/templates/Layout";
-import Seo from "components/templates/Seo";
+import Seo, { SeoProps } from "components/templates/Seo";
 import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import useUser from "hooks/useUser";
 import dayjs from "libs/dayjs";
@@ -35,11 +36,12 @@ export type ArticleIdProps = Pick<
   | "title"
   | "untilDate"
   | "uid"
-> & {
-  articleId: string;
-  content: string;
-  title: string;
-} & (
+> &
+  Pick<SeoProps, "imageNumber"> & {
+    articleId: string;
+    content: string;
+    title: string;
+  } & (
     | {
         disabledEmail: boolean;
         isSignIn: true;
@@ -59,6 +61,7 @@ function ArticleId({
   frequency,
   fromDate,
   genre,
+  imageNumber,
   part,
   place,
   sex,
@@ -152,7 +155,12 @@ function ArticleId({
 
   return (
     <>
-      <Seo description={content} noindex={false} title={title} />
+      <Seo
+        description={content}
+        imageNumber={imageNumber}
+        noindex={false}
+        title={title}
+      />
       {props.isSignIn ? (
         <ArticleDetail
           age={age}
@@ -290,6 +298,8 @@ export const getServerSideProps: GetServerSideProps<
       uid,
       untilDate,
       disabledEmail: !enabledContactEmail,
+      // eslint-disable-next-line new-cap
+      imageNumber: Math.max(...articleId.split("").map((v) => AtoN(v))) % 6,
       isSignIn: true,
     },
   };

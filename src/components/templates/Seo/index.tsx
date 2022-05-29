@@ -1,20 +1,42 @@
 import { NextSeo, NextSeoProps } from "next-seo";
 import { useRouter } from "next/router";
+import { useMemo } from "react";
 
 export type SeoProps = Pick<
   NextSeoProps,
   "description" | "noindex" | "title"
 > & {
+  imageNumber?: number;
   type?: NonNullable<NextSeoProps["openGraph"]>["type"];
 };
 
 function Seo({
   description = "最高のバンドメンバーと出会おう！",
+  imageNumber,
   noindex,
   title,
   type = "article",
 }: SeoProps): JSX.Element {
   const { asPath } = useRouter();
+  const images = useMemo(() => {
+    const images = Array(6)
+      .fill(undefined)
+      .map((_, index) => ({
+        alt: "りくばん！",
+        height: 630,
+        type: "image/png",
+        url: `https://recban.kk-web.link/og-image-0${index + 1}.png`,
+        width: 1200,
+      }));
+
+    if (typeof imageNumber === "undefined") {
+      return images;
+    }
+
+    const image = images.find((_, index) => imageNumber === index);
+
+    return image ? [image] : images;
+  }, [imageNumber]);
 
   return (
     <NextSeo
@@ -32,51 +54,8 @@ function Seo({
       noindex={noindex}
       openGraph={{
         description,
+        images,
         type,
-        images: [
-          {
-            alt: "りくばん！",
-            height: 630,
-            type: "image/png",
-            url: "https://recban.kk-web.link/og-image-01.png",
-            width: 1200,
-          },
-          {
-            alt: "りくばん！",
-            height: 630,
-            type: "image/png",
-            url: "https://recban.kk-web.link/og-image-02.png",
-            width: 1200,
-          },
-          {
-            alt: "りくばん！",
-            height: 630,
-            type: "image/png",
-            url: "https://recban.kk-web.link/og-image-03.png",
-            width: 1200,
-          },
-          {
-            alt: "りくばん！",
-            height: 630,
-            type: "image/png",
-            url: "https://recban.kk-web.link/og-image-04.png",
-            width: 1200,
-          },
-          {
-            alt: "りくばん！",
-            height: 630,
-            type: "image/png",
-            url: "https://recban.kk-web.link/og-image-05.png",
-            width: 1200,
-          },
-          {
-            alt: "りくばん！",
-            height: 630,
-            type: "image/png",
-            url: "https://recban.kk-web.link/og-image-06.png",
-            width: 1200,
-          },
-        ],
         locale: "ja",
         site_name: "りくばん！",
         title: `${title} - りくばん！`,

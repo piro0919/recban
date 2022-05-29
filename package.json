@@ -9,6 +9,7 @@
     "@sendgrid/mail": "7.6.2",
     "@szhsin/react-menu": "3.0.1",
     "@vespaiach/axios-fetch-adapter": "0.2.2",
+    "alphabet-to-number": "1.0.0",
     "axios": "0.26.1",
     "contentful": "9.1.28",
     "contentful-management": "10.3.1",
