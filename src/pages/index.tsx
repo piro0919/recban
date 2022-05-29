@@ -64,7 +64,11 @@ function Pages(props: PagesProps): JSX.Element {
 
   return (
     <>
-      <Seo noindex={false} title="最高のバンドメンバーと出会おう！" />
+      <Seo
+        noindex={false}
+        title="最高のバンドメンバーと出会おう！"
+        type="website"
+      />
       {props.isFirstAccess ? (
         <LandingTop totalNumberOfArticles={props.totalNumberOfArticles} />
       ) : (
