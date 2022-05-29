@@ -193,8 +193,11 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
             <ScrollToTop
               color="#e8eaed"
               style={{
+                alignItems: "center",
                 background: "#2d2e30",
                 boxShadow: "none",
+                display: "flex",
+                justifyContent: "center",
                 opacity: 0.75,
               }}
               width="20"
