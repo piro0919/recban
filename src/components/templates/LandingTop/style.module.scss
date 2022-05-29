@@ -64,10 +64,15 @@
   color: #fff;
   content: "▶";
   display: block;
-  font-size: 2.4rem;
   padding: 16px 24px;
   position: absolute;
   right: 0;
+  @include mq.mq($until: tablet) {
+    font-size: 1.4rem;
+  }
+  @include mq.mq($from: tablet) {
+    font-size: 2rem;
+  }
 }
 
 .message {
@@ -78,10 +83,10 @@
   text-align: center;
   white-space: nowrap;
   @include mq.mq($until: tablet) {
-    font-size: 2.4rem;
+    font-size: 2rem;
   }
   @include mq.mq($from: tablet) {
-    font-size: 3.2rem;
+    font-size: 2.8rem;
   }
 }
 
