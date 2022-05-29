@@ -5,13 +5,14 @@ import styles from "./style.module.scss";
 
 export type MyArticleNewProps = Pick<
   ArticleFormProps,
-  "articleId" | "defaultValues" | "onSubmit"
+  "articleId" | "defaultValues" | "onSubmit" | "previousFieldValues"
 >;
 
 function MyArticleNew({
   articleId,
   defaultValues,
   onSubmit,
+  previousFieldValues,
 }: MyArticleNewProps): JSX.Element {
   return (
     <div className={styles.wrapper}>
@@ -19,6 +20,7 @@ function MyArticleNew({
         articleId={articleId}
         defaultValues={defaultValues}
         onSubmit={onSubmit}
+        previousFieldValues={previousFieldValues}
       />
     </div>
   );

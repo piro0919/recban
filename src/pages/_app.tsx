@@ -185,7 +185,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
                   style: {
                     background: "#2d2e30",
                     color: "#e8eaed",
-                    maxWidth: 400,
+                    maxWidth: 480,
                   },
                 }}
               />

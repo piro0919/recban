@@ -182,7 +182,9 @@ export const getServerSideProps: GetServerSideProps<PagesProps> = async (
       "fields.parts": part,
       "fields.places": place,
       "fields.sex": sex,
-      limit: 24,
+      // TODO: ページャーの実装
+      // limit: 24,
+      order: "-sys.createdAt",
     })
     .then(({ items, total }) => ({
       total,

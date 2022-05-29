@@ -8,7 +8,7 @@ import Textarea from "components/atoms/Textarea";
 import useGenres from "hooks/useGenres";
 import useParts from "hooks/useParts";
 import usePrefectures from "hooks/usePrefectures";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   Controller,
   FieldError,
@@ -66,12 +66,14 @@ export type ArticleFormProps = {
   articleId?: string;
   defaultValues?: FieldValues;
   onSubmit: SubmitHandler<FieldValues>;
+  previousFieldValues?: FieldValues;
 };
 
 function ArticleForm({
   articleId,
   defaultValues,
   onSubmit,
+  previousFieldValues,
 }: ArticleFormProps): JSX.Element {
   const genres = useGenres();
   const parts = useParts();
@@ -81,6 +83,7 @@ function ArticleForm({
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
+    reset,
     setValue,
   } = useForm<FieldValues>({
     defaultValues: defaultValues || {
@@ -107,10 +110,27 @@ function ArticleForm({
       ),
     [prefectures]
   );
+  const handleReflect = useCallback(() => {
+    if (!previousFieldValues) {
+      return;
+    }
+
+    reset(previousFieldValues);
+  }, [previousFieldValues, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className={styles.formInner}>
+        {previousFieldValues ? (
+          <>
+            <div>
+              <Button onClick={handleReflect}>
+                前回作成した記事を反映する
+              </Button>
+            </div>
+            <HorizontalRule />
+          </>
+        ) : null}
         <div className={styles.fieldsWrapper}>
           <div>
             <label className={`${styles.label} ${styles.inputLabel}`}>

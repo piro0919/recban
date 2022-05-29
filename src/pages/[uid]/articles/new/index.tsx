@@ -14,11 +14,14 @@ import toast from "react-hot-toast";
 import { useEffectOnce } from "usehooks-ts";
 
 export type NewProps = {
+  previousFieldValues: Required<
+    MyArticleNewProps["previousFieldValues"]
+  > | null;
   total: number;
   uid: string;
 };
 
-function New({ total, uid }: NewProps): JSX.Element {
+function New({ previousFieldValues, total, uid }: NewProps): JSX.Element {
   const router = useRouter();
   const handleSubmit = useCallback<MyArticleNewProps["onSubmit"]>(
     async ({
@@ -82,7 +85,10 @@ function New({ total, uid }: NewProps): JSX.Element {
   return (
     <>
       <Seo noindex={true} title="メンバーの募集" />
-      <MyArticleNew onSubmit={handleSubmit} />
+      <MyArticleNew
+        onSubmit={handleSubmit}
+        previousFieldValues={previousFieldValues || undefined}
+      />
     </>
   );
 }
@@ -106,13 +112,46 @@ export const getServerSideProps: GetServerSideProps<
   }
 
   const { uid } = params;
-  const { total } = await client.getEntries<Contentful.IArticlesFields>({
+  const { items, total } = await client.getEntries<Contentful.IArticlesFields>({
     content_type: "articles" as Contentful.CONTENT_TYPE,
     "fields.uid": uid,
+    order: "-sys.createdAt",
   });
 
+  let previousFieldValues: NewProps["previousFieldValues"] = null;
+
+  if (items.length) {
+    const {
+      fields: {
+        ambition,
+        content,
+        frequency,
+        genres,
+        maxAge,
+        minAge,
+        parts,
+        places,
+        sex,
+        title,
+      },
+    } = items[0];
+
+    previousFieldValues = {
+      ambition,
+      content,
+      frequency,
+      genres,
+      parts,
+      places,
+      sex,
+      title,
+      maxAge: maxAge.toString(),
+      minAge: minAge.toString(),
+    };
+  }
+
   return {
-    props: { total, uid },
+    props: { previousFieldValues, total, uid },
   };
 };
 
