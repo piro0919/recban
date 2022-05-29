@@ -108,6 +108,7 @@ export const getServerSideProps: GetServerSideProps<
   const { uid } = params;
   const { total } = await client.getEntries<Contentful.IArticlesFields>({
     content_type: "articles" as Contentful.CONTENT_TYPE,
+    "fields.uid": uid,
   });
 
   return {
