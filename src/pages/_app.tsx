@@ -10,6 +10,8 @@ import { getRedirectResult, UserCredential } from "firebase/auth";
 import auth from "libs/auth";
 import fetcher from "libs/fetcher";
 import infoToast from "libs/infoToast";
+import LogRocket from "logrocket";
+import setupLogRocketReact from "logrocket-react";
 import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -69,6 +71,13 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
           path: "/",
           sameSite: "Lax",
         });
+      });
+
+      const { displayName, email, uid } = user;
+
+      LogRocket.identify(uid, {
+        email: email || "",
+        name: displayName || "",
       });
 
       return;
@@ -144,6 +153,16 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout): JSX.Element {
 
     callback();
   }, [user]);
+
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_LOG_ROCKET_APP_ID) {
+      return;
+    }
+
+    LogRocket.init(process.env.NEXT_PUBLIC_LOG_ROCKET_APP_ID);
+
+    setupLogRocketReact(LogRocket);
+  }, []);
 
   usePagesViews();
 
