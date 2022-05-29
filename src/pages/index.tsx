@@ -62,26 +62,27 @@ function Pages(props: PagesProps): JSX.Element {
     toast.success("検索条件を保存しました");
   }, [props]);
 
-  return (
+  return props.isFirstAccess ? (
+    <>
+      <Seo noindex={false} type="website" />
+      <LandingTop totalNumberOfArticles={props.totalNumberOfArticles} />
+    </>
+  ) : (
     <>
       <Seo
         noindex={false}
         title="最高のバンドメンバーと出会おう！"
         type="website"
       />
-      {props.isFirstAccess ? (
-        <LandingTop totalNumberOfArticles={props.totalNumberOfArticles} />
-      ) : (
-        <Layout>
-          <ArticlesTop
-            articles={props.articles}
-            defaultValues={props.defaultValues}
-            onSaveSearchConditions={handleSaveSearchConditions}
-            onSubmit={handleSubmit}
-            total={props.total}
-          />
-        </Layout>
-      )}
+      <Layout>
+        <ArticlesTop
+          articles={props.articles}
+          defaultValues={props.defaultValues}
+          onSaveSearchConditions={handleSaveSearchConditions}
+          onSubmit={handleSubmit}
+          total={props.total}
+        />
+      </Layout>
     </>
   );
 }
