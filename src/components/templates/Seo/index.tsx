@@ -58,7 +58,7 @@ function Seo({
         type,
         locale: "ja",
         site_name: "りくばん！",
-        title: `${title} - りくばん！`,
+        title: title ? `${title} - りくばん！` : "りくばん！",
         url: `https://recban.kk-web.link${asPath}`,
       }}
       title={title ? `${title} - りくばん！` : "りくばん！"}
