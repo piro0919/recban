@@ -2,8 +2,8 @@ import axios, { AxiosResponse } from "axios";
 import Layout from "components/templates/Layout";
 import MyEmailNew, { MyEmailNewProps } from "components/templates/MyEmailNew";
 import Seo from "components/templates/Seo";
-import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import getClient from "libs/getClient";
+import getFirestore from "libs/getFirestore";
 import infoToast from "libs/infoToast";
 import signout from "libs/signout";
 import { GetServerSideProps } from "next";
@@ -98,7 +98,7 @@ function New({
 }
 
 New.getLayout = function getLayout(page: ReactElement): JSX.Element {
-  return <Layout>{page}</Layout>;
+  return <Layout hasMargin={false}>{page}</Layout>;
 };
 
 type ParsedUrlQuery = {
@@ -128,19 +128,19 @@ export const getServerSideProps: GetServerSideProps<
   }
 
   const db = getFirestore();
-  const collectionRef = collection(db, "users");
-  const docRef = doc(collectionRef, uid);
-  const snapshot = await getDoc(docRef);
+  const collectionRef = db.collection("users");
+  const docRef = collectionRef.doc(uid);
+  const snapshot = await docRef.get();
 
-  if (!snapshot.exists()) {
+  if (!snapshot.exists) {
     return signout;
   }
 
   const { enabledContactEmail, name } = snapshot.data() as Firestore.User;
-  const collocutorDocRef = doc(collectionRef, collocutorUid);
-  const collocutorSnapshot = await getDoc(collocutorDocRef);
+  const collocutorDocRef = collectionRef.doc(collocutorUid);
+  const collocutorSnapshot = await collocutorDocRef.get();
 
-  if (!collocutorSnapshot.exists()) {
+  if (!collocutorSnapshot.exists) {
     return signout;
   }
 

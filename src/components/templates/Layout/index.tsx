@@ -6,9 +6,10 @@ import styles from "./style.module.scss";
 
 export type LayoutProps = {
   children: ReactNode;
+  hasMargin?: boolean;
 };
 
-function Layout({ children }: LayoutProps): JSX.Element {
+function Layout({ children, hasMargin = true }: LayoutProps): JSX.Element {
   const { height } = useWindowSize();
   const style = useMemo<CSSProperties>(
     () => ({ minHeight: `${height}px` }),
@@ -23,7 +24,10 @@ function Layout({ children }: LayoutProps): JSX.Element {
             <Header />
           </div>
         </div>
-        <main className={styles.main}>
+        <main
+          className={styles.main}
+          style={hasMargin ? undefined : { paddingBottom: 0 }}
+        >
           <div className={styles.inner}>{children}</div>
         </main>
         <div className={styles.footerWrapper}>

@@ -8,13 +8,17 @@ function Custom404(): JSX.Element {
       <Seo noindex={true} title="ページが見つかりません" />
       <div
         style={{
+          alignContent: "center",
           alignItems: "center",
-          display: "flex",
+          display: "grid",
+          gap: "12px",
           height: "100%",
           justifyContent: "center",
+          textAlign: "center",
         }}
       >
-        <h2>404 - ページが見つかりません</h2>
+        <h2>404</h2>
+        <p>ページが見つかりません</p>
       </div>
     </>
   );

@@ -42,8 +42,6 @@ function Messages({ isApplicant, messages }: MessagesProps): JSX.Element {
     [isApplicant, messages]
   );
 
-  console.log(messages);
-
   return <div className={styles.wrapper}>{items}</div>;
 }
 

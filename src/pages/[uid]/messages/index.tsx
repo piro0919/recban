@@ -3,8 +3,8 @@ import MessagesTop, {
   MessagesTopProps,
 } from "components/templates/MessagesTop";
 import Seo from "components/templates/Seo";
-import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import getClient from "libs/getClient";
+import getFirestore from "libs/getFirestore";
 import signout from "libs/signout";
 import { GetServerSideProps } from "next";
 import { ReactElement } from "react";
@@ -57,7 +57,7 @@ export const getServerSideProps: GetServerSideProps<
 
   const { uid } = params;
   const db = getFirestore();
-  const collectionRef = collection(db, "users");
+  const collectionRef = db.collection("users");
   const [{ applicantMessages }, { recruiterMessages }] = await Promise.all([
     // 応募中の記事一覧の取得 start
     client
@@ -88,10 +88,10 @@ export const getServerSideProps: GetServerSideProps<
                   } = await client.getEntry<Contentful.IArticlesFields>(
                     articleId
                   );
-                  const docRef = doc(collectionRef, uid);
-                  const snapshot = await getDoc(docRef);
+                  const docRef = collectionRef.doc(uid);
+                  const snapshot = await docRef.get();
 
-                  if (snapshot.exists()) {
+                  if (snapshot.exists) {
                     const { name: applicantName } =
                       snapshot.data() as Firestore.User;
 
@@ -146,10 +146,10 @@ export const getServerSideProps: GetServerSideProps<
                             if (user === "recruiter") {
                               name = "あなた";
                             } else {
-                              const docRef = doc(collectionRef, applicantUid);
-                              const snapshot = await getDoc(docRef);
+                              const docRef = collectionRef.doc(applicantUid);
+                              const snapshot = await docRef.get();
 
-                              if (snapshot.exists()) {
+                              if (snapshot.exists) {
                                 const { name: applicantName } =
                                   snapshot.data() as Firestore.User;
 

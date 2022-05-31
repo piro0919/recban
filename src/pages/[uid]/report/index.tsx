@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import Layout from "components/templates/Layout";
 import MyEmailNew, { MyEmailNewProps } from "components/templates/MyEmailNew";
 import Seo from "components/templates/Seo";
-import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
+import getFirestore from "libs/getFirestore";
 import signout from "libs/signout";
 import { GetServerSideProps } from "next";
 import { PostEmailData, PostEmailBody } from "pages/api/email";
@@ -45,7 +45,7 @@ function Report({ name, uid }: ReportProps): JSX.Element {
 }
 
 Report.getLayout = function getLayout(page: ReactElement): JSX.Element {
-  return <Layout>{page}</Layout>;
+  return <Layout hasMargin={false}>{page}</Layout>;
 };
 
 type ParsedUrlQuery = {
@@ -62,11 +62,11 @@ export const getServerSideProps: GetServerSideProps<
 
   const { uid } = params;
   const db = getFirestore();
-  const collectionRef = collection(db, "users");
-  const docRef = doc(collectionRef, uid);
-  const snapshot = await getDoc(docRef);
+  const collectionRef = db.collection("users");
+  const docRef = collectionRef.doc(uid);
+  const snapshot = await docRef.get();
 
-  if (!snapshot.exists()) {
+  if (!snapshot.exists) {
     return signout;
   }
 

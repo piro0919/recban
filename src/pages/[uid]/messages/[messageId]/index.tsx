@@ -4,11 +4,11 @@ import MessageDetail, {
   MessageDetailProps,
 } from "components/templates/MessageDetail";
 import Seo from "components/templates/Seo";
-import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import dayjs from "libs/dayjs";
 import fetcher from "libs/fetcher";
 import getClient from "libs/getClient";
 import getEnvironment from "libs/getEnvironment";
+import getFirestore from "libs/getFirestore";
 import signout from "libs/signout";
 import { GetServerSideProps } from "next";
 import { PostEmailData, PostEmailBody } from "pages/api/email";
@@ -78,8 +78,10 @@ function MessageId({
         unreadUser: isApplicant ? "recruiter" : "applicant",
       });
 
-      // バウンドミューテートにすると取得しきれないケースがある
-      await mutate();
+      setTimeout(async () => {
+        // TODO: バウンドミューテートにすると取得しきれないケースがある
+        await mutate();
+      }, 1000);
 
       if (!collocutorNotification) {
         return;
@@ -143,7 +145,7 @@ function MessageId({
 }
 
 MessageId.getLayout = function getLayout(page: ReactElement): JSX.Element {
-  return <Layout>{page}</Layout>;
+  return <Layout hasMargin={false}>{page}</Layout>;
 };
 
 type ParsedUrlQuery = {
@@ -209,15 +211,15 @@ export const getServerSideProps: GetServerSideProps<
   }
 
   const db = getFirestore();
-  const collectionRef = collection(db, "users");
-  const applicantDocRef = doc(collectionRef, applicantUid);
-  const recruiterDocRef = doc(collectionRef, recruiterUid);
+  const collectionRef = db.collection("users");
+  const applicantDocRef = collectionRef.doc(applicantUid);
+  const recruiterDocRef = collectionRef.doc(recruiterUid);
   const [applicantSnapshot, recruiterSnapshot] = await Promise.all([
-    getDoc(applicantDocRef),
-    getDoc(recruiterDocRef),
+    applicantDocRef.get(),
+    recruiterDocRef.get(),
   ]);
 
-  if (!applicantSnapshot.exists() || !recruiterSnapshot.exists()) {
+  if (!applicantSnapshot.exists || !recruiterSnapshot.exists) {
     return signout;
   }
 

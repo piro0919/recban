@@ -20,16 +20,19 @@ function SignIn({
   return (
     <div className={styles.wrapper}>
       <GoogleLoginButton
+        align="center"
         className={styles.button}
         onClick={onSignInGoogle}
         text="Googleでログインする"
       />
       <TwitterLoginButton
+        align="center"
         className={styles.button}
         onClick={onSignInTwitter}
         text="Twitterでログインする"
       />
       <FacebookLoginButton
+        align="center"
         className={styles.button}
         onClick={onSignInFacebook}
         text="Facebookでログインする"

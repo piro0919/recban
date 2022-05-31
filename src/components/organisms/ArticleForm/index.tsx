@@ -42,13 +42,11 @@ const schema = yup.object().shape({
   maxAge: yup
     .number()
     .typeError("最大年齢を選択してください")
-    .when("minAge", (minAge: number, schema) => {
-      console.log(typeof minAge);
-
-      return isNaN(minAge)
+    .when("minAge", (minAge: number, schema) =>
+      isNaN(minAge)
         ? schema
-        : schema.min(minAge, "最大年齢は最小年齢以上を選択してください");
-    }),
+        : schema.min(minAge, "最大年齢は最小年齢以上を選択してください")
+    ),
   minAge: yup.number().typeError("最小年齢を選択してください"),
   parts: yup
     .array()

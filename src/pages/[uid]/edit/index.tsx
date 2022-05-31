@@ -4,7 +4,7 @@ import ProfileEdit, {
   ProfileEditProps,
 } from "components/templates/ProfileEdit";
 import Seo from "components/templates/Seo";
-import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
+import getFirestore from "libs/getFirestore";
 import signout from "libs/signout";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
@@ -69,11 +69,11 @@ export const getServerSideProps: GetServerSideProps<
 
   const { uid } = params;
   const db = getFirestore();
-  const collectionRef = collection(db, "users");
-  const docRef = doc(collectionRef, uid);
-  const snapshot = await getDoc(docRef);
+  const collectionRef = db.collection("users");
+  const docRef = collectionRef.doc(uid);
+  const snapshot = await docRef.get();
 
-  if (!snapshot.exists()) {
+  if (!snapshot.exists) {
     return {
       redirect: {
         destination: `/${uid}/new`,

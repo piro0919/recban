@@ -5,9 +5,9 @@ import MyArticleDetail, {
   MyArticleDetailProps,
 } from "components/templates/MyArticleDetail";
 import Seo from "components/templates/Seo";
-import { collection, doc, getDoc, getFirestore } from "firebase/firestore";
 import dayjs from "libs/dayjs";
 import getClient from "libs/getClient";
+import getFirestore from "libs/getFirestore";
 import infoToast from "libs/infoToast";
 import signout from "libs/signout";
 import { GetServerSideProps } from "next";
@@ -201,11 +201,11 @@ export const getServerSideProps: GetServerSideProps<
       })
     );
   const db = getFirestore();
-  const collectionRef = collection(db, "users");
-  const docRef = doc(collectionRef, uid);
-  const snapshot = await getDoc(docRef);
+  const collectionRef = db.collection("users");
+  const docRef = collectionRef.doc(uid);
+  const snapshot = await docRef.get();
 
-  if (!snapshot.exists()) {
+  if (!snapshot.exists) {
     return signout;
   }
 

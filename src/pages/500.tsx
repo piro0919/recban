@@ -8,13 +8,17 @@ function Custom500(): JSX.Element {
       <Seo noindex={true} title="サーバー側のエラーが発生しました" />
       <div
         style={{
+          alignContent: "center",
           alignItems: "center",
-          display: "flex",
+          display: "grid",
+          gap: "12px",
           height: "100%",
           justifyContent: "center",
+          textAlign: "center",
         }}
       >
-        <h2>500 - サーバー側のエラーが発生しました</h2>
+        <h2>500</h2>
+        <p>サーバー側のエラーが発生しました</p>
       </div>
     </>
   );
