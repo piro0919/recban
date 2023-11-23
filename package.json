@@ -16,7 +16,7 @@
     "contentful-management": "10.6.3",
     "dayjs": "1.11.3",
     "firebase": "9.8.4",
-    "firebase-admin": "10.3.0",
+    "firebase-admin": "11.11.1",
     "logrocket": "3.0.1",
     "logrocket-react": "5.0.1",
     "multiselect-react-dropdown": "2.0.25",
