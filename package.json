@@ -57,8 +57,8 @@
     "yup": "0.32.11"
   },
   "devDependencies": {
-    "@commitlint/cli": "16.3.0",
-    "@commitlint/config-conventional": "16.2.4",
+    "@commitlint/cli": "19.5.0",
+    "@commitlint/config-conventional": "19.5.0",
     "@types/logrocket-react": "3.0.0",
     "@types/node": "17.0.31",
     "@types/react": "18.0.14",
