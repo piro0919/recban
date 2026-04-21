@@ -2,7 +2,7 @@
 
 > Find your ideal band members — Japanese band matching service.
 
-[🔗 Live Site](https://recban.kk-web.link)
+[🔗 Live Site](https://recban.kkweb.io)
 
 ## ✨ Features
 
