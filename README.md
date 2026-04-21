@@ -2,8 +2,6 @@
 
 > Find your ideal band members — Japanese band matching service.
 
-最高のバンドメンバーと出会おう！
-
 [🔗 Live Site](https://recban.kk-web.link)
 
 ## ✨ Features
@@ -26,3 +24,7 @@
 pnpm install
 pnpm dev
 ```
+
+## 📄 License
+
+MIT
