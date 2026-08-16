@@ -3,9 +3,6 @@
     "@djthoms/pretty-checkbox": "3.1.0",
     "@hookform/resolvers": "2.9.3",
     "@mpth/react-no-ssr": "1.0.1",
-    "@next-boost/hybrid-disk-cache": "0.3.0",
-    "@next-boost/next-boost": "0.15.2",
-    "@next-boost/redis-cache": "0.4.0",
     "@sendgrid/mail": "7.7.0",
     "@szhsin/react-menu": "3.1.1",
     "@vespaiach/axios-fetch-adapter": "0.3.0",
@@ -108,6 +105,6 @@
     "prebuild": "contentful-typescript-codegen --namespace Contentful --output contentful.d.ts",
     "prepare": "npx husky install",
     "prettier": "prettier --write .",
-    "start": "next-boost"
+    "start": "next start"
   }
 }
