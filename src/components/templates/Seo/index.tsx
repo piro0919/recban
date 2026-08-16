@@ -25,7 +25,7 @@ function Seo({
         alt: "りくばん！",
         height: 630,
         type: "image/png",
-        url: `https://recban.kk-web.link/og-image-0${index + 1}.png`,
+        url: `https://recban.kkweb.io/og-image-0${index + 1}.png`,
         width: 1200,
       }));
 
@@ -46,7 +46,7 @@ function Seo({
           rel: "manifest",
         },
       ]}
-      canonical="https://recban.kk-web.link/"
+      canonical="https://recban.kkweb.io/"
       description={description}
       facebook={{
         appId: "5017539104966167",
@@ -59,7 +59,7 @@ function Seo({
         locale: "ja",
         site_name: "りくばん！",
         title: title ? `${title} - りくばん！` : "りくばん！",
-        url: `https://recban.kk-web.link${asPath}`,
+        url: `https://recban.kkweb.io${asPath}`,
       }}
       title={title ? `${title} - りくばん！` : "りくばん！"}
       twitter={{

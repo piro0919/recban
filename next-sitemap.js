@@ -2,5 +2,5 @@
 
 module.exports = {
   generateRobotsTxt: true,
-  siteUrl: "https://recban.kk-web.link",
+  siteUrl: "https://recban.kkweb.io",
 };
